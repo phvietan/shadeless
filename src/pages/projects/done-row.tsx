@@ -7,8 +7,8 @@ import { Project } from 'libs/apis/projects';
 
 type Props = {
   project: Project;
-  setHacking: (projectName: string) => void;
-  deleteButton: (projectName: string) => void;
+  setHacking: (project: Project) => void;
+  deleteButton: (project: Project) => void;
 }
 
 function DoneRow (props: Props) {
@@ -60,7 +60,7 @@ function DoneRow (props: Props) {
         <Button
           size="xs"
           colorScheme="purple"
-          onClick={() => setHacking(project.name)}
+          onClick={() => setHacking(project)}
         >
           Set hacking
         </Button>
@@ -74,7 +74,7 @@ function DoneRow (props: Props) {
         <Button
           size="xs"
           colorScheme="red"
-          onClick={() => deleteButton(project.name)}
+          onClick={() => deleteButton(project)}
         >
          Delete
         </Button>

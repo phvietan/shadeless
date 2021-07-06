@@ -7,8 +7,8 @@ import { Project } from 'libs/apis/projects';
 
 type Props = {
   project: Project;
-  setHacking: (projectName: string) => void;
-  deleteButton: (projectName: string) => void;
+  setHacking: (project: Project) => void;
+  deleteButton: (project: Project) => void;
 }
 function TodoRow (props: Props) {
   const currentProject = getCookie('project');
@@ -59,15 +59,8 @@ function TodoRow (props: Props) {
       <HStack>
         <Button
           size="xs"
-          colorScheme="purple"
-          onClick={() => setHacking(project.name)}
-        >
-          Set hacking
-        </Button>
-        <Button
-          size="xs"
           colorScheme="green"
-          onClick={() => setHacking(project.name)}
+          onClick={() => setHacking(project)}
         >
           Set hacking
         </Button>
@@ -81,7 +74,7 @@ function TodoRow (props: Props) {
         <Button
           size="xs"
           colorScheme="red"
-          onClick={() => deleteButton(project.name)}
+          onClick={() => deleteButton(project)}
         >
          Delete
         </Button>

@@ -31,22 +31,23 @@ function ShowProjectsBox (props: Props) {
     setDoneProjects(done);
   }, [projects]);
 
-  const setHacking = async (projectName: string) => {
-    setCookie('project', projectName, 99999);
-    const response = await projectApiInstance.edit({ status: ProjectStatus.HACKING }, projectName);
+  const setHacking = async (project: Project) => {
+    setCookie('project', project.name, 99999);
+    const response = await projectApiInstance.edit({ status: ProjectStatus.HACKING }, project.id);
     notify(toast, response);
     await getProjects();
   };
-  const setDone = async (projectName: string) => {
-    if (currentProject === projectName) deleteCookie('project');
-    const response = await projectApiInstance.edit({ status: ProjectStatus.DONE }, projectName);
+  const setDone = async (project: Project) => {
+    if (currentProject === project.name) deleteCookie('project');
+    const response = await projectApiInstance.edit({ status: ProjectStatus.DONE }, project.id);
     notify(toast, response);
     await getProjects();
   };
-  const deleteProject = async (name: string) => {
-    const response = await projectApiInstance.delete(name);
+  const deleteProject = async (project: Project) => {
+    if (currentProject === project.name) deleteCookie('project');
+    const response = await projectApiInstance.delete(project.id);
     notify(toast, response);
-    window.location.reload();
+    await getProjects();
   };
   return (
     <Box

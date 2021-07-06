@@ -7,9 +7,9 @@ import { Project } from 'libs/apis/projects';
 
 type Props = {
   project: Project;
-  setDone: (projectName: string) => void;
-  setHacking: (projectName: string) => void;
-  deleteButton: (projectName: string) => void;
+  setDone: (project: Project) => void;
+  setHacking: (project: Project) => void;
+  deleteButton: (project: Project) => void;
 }
 function HackingRow (props: Props) {
   const currentProject = getCookie('project');
@@ -61,14 +61,14 @@ function HackingRow (props: Props) {
         <Button
           size="xs"
           colorScheme="purple"
-          onClick={() => setHacking(project.name)}
+          onClick={() => setHacking(project)}
         >
           Set hacking
         </Button>
         <Button
           size="xs"
           colorScheme="green"
-          onClick={() => setDone(project.name)}
+          onClick={() => setDone(project)}
         >
           Set done
         </Button>
@@ -82,7 +82,7 @@ function HackingRow (props: Props) {
         <Button
           size="xs"
           colorScheme="red"
-          onClick={() => deleteButton(project.name)}
+          onClick={() => deleteButton(project)}
         >
          Delete
         </Button>

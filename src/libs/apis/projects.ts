@@ -8,7 +8,7 @@ export enum ProjectStatus {
 }
 
 export type Project = {
-  id: number,
+  id: string,
   name: string,
   description: string,
   status: ProjectStatus,

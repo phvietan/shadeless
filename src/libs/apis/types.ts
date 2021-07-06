@@ -24,7 +24,7 @@ export class GenericApi {
 
   static putOptions = {
     ...GenericApi.jsonOptions,
-    method: 'POST',
+    method: 'PUT',
   };
 
   static deleteOptions = {
@@ -47,7 +47,7 @@ export class GenericApi {
   }
 
   protected async getOne (identifier: string): Promise<any> {
-    const data = await fetch(`${this.endpoint}/${identifier}`);
+    const data = await fetch(this.endpoint + identifier);
     const response = await data.json();
     return response;
   }
@@ -62,7 +62,6 @@ export class GenericApi {
   }
 
   protected async put (body: any, identifier?: string): Promise<any> {
-    identifier = (identifier) ? '/' + identifier : '';
     const data = await fetch(this.endpoint + identifier, {
       ...GenericApi.putOptions,
       body: JSON.stringify(body),
@@ -72,8 +71,7 @@ export class GenericApi {
   }
 
   protected async delete (identifier: string): Promise<any> {
-    identifier = (identifier) ? '/' + identifier : '';
-    const data = await fetch(this.endpoint, GenericApi.deleteOptions);
+    const data = await fetch(this.endpoint + identifier, GenericApi.deleteOptions);
     const response = await data.json();
     return response;
   }
