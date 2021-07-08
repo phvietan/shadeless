@@ -7,10 +7,9 @@ function Footer () {
       textAlign="center"
       bg="black"
       color="white"
-      mt="20vh"
       p="10px"
       boxShadow="md"
-    >
+  >
       @ 2021 Shadeless reconnaissance application
     </Box>
   );

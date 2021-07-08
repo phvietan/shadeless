@@ -19,7 +19,10 @@ function ProjectsPage () {
   }, []);
 
   return (
-    <Box bg="background.primary-grey">
+    <Box
+      bg="background.primary-grey"
+      pb="10vh"
+    >
       <Navbar />
       <CreateProjectBox
         getProjects={getProjects}

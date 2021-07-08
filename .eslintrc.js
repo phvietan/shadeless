@@ -27,4 +27,8 @@ module.exports = {
     'no-use-before-define': 'off',
     'react/prop-types': 'off',
   },
+  globals: {
+    React: true,
+    JSX: true
+  }
 };
