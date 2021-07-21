@@ -1,12 +1,13 @@
 import React from 'react';
-import { Box, Text, Link } from '@chakra-ui/react';
+import { Box, Text, Link, SkeletonText } from '@chakra-ui/react';
 
 type Props = {
   origins: string[];
+  isLoading: boolean;
 }
 
 function ShowOrigins (props: Props) {
-  const { origins } = props;
+  const { origins, isLoading } = props;
   return (
     <Box>
       <Text as="h1"
@@ -26,6 +27,9 @@ function ShowOrigins (props: Props) {
         borderRadius="5px"
         boxShadow="sm"
       >
+        {isLoading &&
+          <SkeletonText mt="30px" p="20px" noOfLines={7} spacing="4" />
+        }
         {origins.map(origin =>
           <Text
             as="p"

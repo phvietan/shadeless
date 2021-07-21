@@ -5,11 +5,11 @@ import AppPage from 'pages/App';
 import ProjectsPage from 'pages/Projects';
 
 import Footer from 'pages/footer';
-import { getCookie } from 'libs/cookie';
-// import { getCookie } from 'libs/cookie';
+import DomainsPage from './Domains';
+import storage from 'libs/storage';
 
 function Routes () {
-  const cookie = getCookie('project');
+  const cookie = storage.getProject();
   const [location] = useLocation();
   if (!cookie && location !== '/projects') return <Redirect to='/projects' />;
   return (
@@ -19,6 +19,9 @@ function Routes () {
       </Route>
       <Route path="/projects">
         <ProjectsPage />
+      </Route>
+      <Route path="/domains">
+        <DomainsPage />
       </Route>
       <Footer />
     </>

@@ -1,10 +1,10 @@
 import React from 'react';
 import Navbar from 'pages/navbar';
-import { Grid, Box, Button } from '@chakra-ui/react';
+import { Box, SkeletonText } from '@chakra-ui/react';
 import { defaultMetaData, PacketsApi } from 'libs/apis/packets';
-import ShowOrigins from 'pages/dashboard/show-origins';
-import ShowParameters from 'pages/dashboard/show-parameters';
 import OriginTab from 'pages/dashboard/origin-tab';
+import AppHeader from './dashboard/app-header';
+import { useHashLocation } from 'libs/location.hook';
 
 const packetApiInstance = PacketsApi.getInstance();
 
@@ -12,6 +12,7 @@ function AppPage () {
   const [isLoading, setIsLoading] = React.useState(true);
   const [viewOrigins, setViewOrigins] = React.useState<string[]>([]);
   const [metaData, setMetaData] = React.useState(defaultMetaData);
+  const currentLocation = useHashLocation();
 
   const getMetaData = async () => {
     const resp = await packetApiInstance.getMetaData();
@@ -22,58 +23,42 @@ function AppPage () {
     result.parameters = result.parameters.filter(p => p !== '');
     result.reflectedParameters = result.reflectedParameters.filter(p => p !== '');
     setMetaData(result);
+    setViewOrigins(result.origins);
     setIsLoading(false);
   };
   React.useEffect(() => {
     getMetaData();
   }, []);
-  React.useEffect(() => {
-    setViewOrigins(metaData.origins.slice(0, 10));
-  }, [metaData]);
 
-  if (isLoading) return <h1>Loading...</h1>;
   return (
     <Box
       bg="background.primary-grey"
+      pb="10vh"
     >
       <Navbar />
-      <Grid
-        gridTemplateColumns={['1fr', null, null, '2fr 3fr']}
-        p="20px"
-        px="5%"
-        gap="20px"
-      >
-        <ShowOrigins
-          origins={metaData.origins.filter(origin => origin !== '')}
-        />
-        <ShowParameters
-          parameters={metaData.parameters}
-          reflectedParameters={metaData.reflectedParameters}
-        />
-      </Grid>
 
-      <Box
-        px="5%"
-      >
+      <AppHeader metaData={metaData} isLoading={isLoading} />
+      <Box px="5%">
+        {isLoading &&
+          <Box
+            bg="background.primary-white"
+            borderRadius="5px 0px"
+          >
+            <SkeletonText
+              p="2%"
+              noOfLines={5}
+              spacing="4"
+            />
+          </Box>
+        }
         {viewOrigins.map(origin =>
           <OriginTab
             key={`origintab-${origin}`}
             origin={origin}
+            isFocus={currentLocation === origin}
           />
         )}
       </Box>
-
-      {viewOrigins.length !== metaData.origins.length &&
-        <Button
-          w="90%"
-          ml="5%"
-          mb="10vh"
-          colorScheme="purple"
-        >
-          More
-        </Button>
-      }
-
     </Box>
   );
 }

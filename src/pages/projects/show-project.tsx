@@ -1,11 +1,11 @@
 import React from 'react';
 import { Box, Grid, Heading, useToast } from '@chakra-ui/react';
-import { deleteCookie, getCookie, setCookie } from 'libs/cookie';
 import { notify } from 'libs/notify';
 import DoneRow from './done-row';
 import TodoRow from './todo-row';
 import HackingRow from './hacking-row';
 import { Project, ProjectsApi, ProjectStatus } from 'libs/apis/projects';
+import storage from 'libs/storage';
 
 const projectApiInstance = ProjectsApi.getInstance();
 
@@ -16,7 +16,7 @@ type Props = {
 function ShowProjectsBox (props: Props) {
   const { projects, getProjects } = props;
   const toast = useToast();
-  const currentProject = getCookie('project');
+  const currentProject = storage.getProject();
 
   const [todoProjects, setTodoProjects] = React.useState<Project[]>([]);
   const [hackingProjects, setHackingProjects] = React.useState<Project[]>([]);
@@ -32,19 +32,19 @@ function ShowProjectsBox (props: Props) {
   }, [projects]);
 
   const setHacking = async (project: Project) => {
-    setCookie('project', project.name, 99999);
+    storage.set('project', project.name);
     const response = await projectApiInstance.edit({ status: ProjectStatus.HACKING }, project.id);
     notify(toast, response);
     await getProjects();
   };
   const setDone = async (project: Project) => {
-    if (currentProject === project.name) deleteCookie('project');
+    if (currentProject === project.name) storage.delete('project');
     const response = await projectApiInstance.edit({ status: ProjectStatus.DONE }, project.id);
     notify(toast, response);
     await getProjects();
   };
   const deleteProject = async (project: Project) => {
-    if (currentProject === project.name) deleteCookie('project');
+    if (currentProject === project.name) storage.delete('project');
     const response = await projectApiInstance.delete(project.id);
     notify(toast, response);
     await getProjects();

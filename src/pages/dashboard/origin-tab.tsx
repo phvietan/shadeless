@@ -3,42 +3,54 @@ import { Box, Text, Th, Tr, Table, Thead, Tbody, SkeletonText, Grid } from '@cha
 import { Packet, PacketsApi } from 'libs/apis/packets';
 import OriginTabRow from './origin-tab-row';
 import Pagination from 'pages/pagination';
-
-type Props = {
-  origin: string;
-}
-
-const PACKETS_PER_PAGE = 2;
+import storage from 'libs/storage';
 
 const packetApiInstance = PacketsApi.getInstance();
 
+type Props = {
+  origin: string;
+  isFocus: boolean;
+}
 function OriginTab (props: Props) {
-  const { origin } = props;
+  const { origin, isFocus } = props;
+
+  const packetsPerPage = storage.getNumPacketsOfOriginByProject(origin);
 
   const [loading, setLoading] = React.useState(true);
   const [page, setPage] = React.useState(1);
   const [numPackets, setNumPackets] = React.useState(0);
   const [numPages, setNumPages] = React.useState(1);
   const [packets, setPackets] = React.useState<Packet[]>([]);
+  const [viewPackets, setViewPackets] = React.useState<Packet[]>([]);
 
-  const getPacketsByOrigin = async (skip = 0, limit = PACKETS_PER_PAGE) => {
+  const getPacketsByOrigin = async (skip = 0, limit = 99999999) => { // TODO: If page too lag, switch to DEFAULT_PACKETS_PER_PAGE
     const resp = await packetApiInstance.getPacketsByOrigin(origin, skip, limit);
     setPackets(resp.data);
+    setViewPackets(resp.data.slice(0, packetsPerPage));
     setLoading(false);
   };
   const getNumberPacketsByOrigin = async () => {
     const resp = await packetApiInstance.getNumberPacketsByOrigin(origin);
     const n = resp.data;
     setNumPackets(n);
-    setNumPages(Math.ceil(n / PACKETS_PER_PAGE));
+    setNumPages(Math.ceil(n / packetsPerPage));
   };
   React.useEffect(() => {
     getNumberPacketsByOrigin();
     getPacketsByOrigin();
   }, []);
 
+  const onClickPagination = (p: number) => {
+    setPage(p);
+    setViewPackets(packets.slice((p - 1) * packetsPerPage, p * packetsPerPage));
+  };
+
+  if (isFocus) {
+    console.log(origin);
+  }
+
   return (
-    <Box>
+    <>
       <Grid
         gridTemplateColumns="1fr 1fr"
         bg="background.primary-black"
@@ -61,6 +73,7 @@ function OriginTab (props: Props) {
 
       <Box
         bg="background.primary-white"
+        border={isFocus ? '2px solid black' : ''}
         p="10px"
         pl="30px"
         overflowY="scroll"
@@ -69,34 +82,45 @@ function OriginTab (props: Props) {
         mb="5vh"
       >
         {loading
-          ? <SkeletonText />
-          : <Table variant="simple">
-            <Thead>
-              <Tr>
-                <Th>Action</Th>
-                <Th>Path</Th>
-                <Th>Mime</Th>
-                <Th>Parameters</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {packets.map(packet =>
-                <OriginTabRow
-                  key={`${packet.origin}/${packet.path}`}
-                  packet={packet}
-                />
-              )}
-            </Tbody>
-          </Table>
+          ? <SkeletonText mt="30px" p="20px" noOfLines={7} spacing="4" />
+          : <Table
+              size="sm"
+              fontSize="xs"
+            >
+              <Thead>
+                <Tr>
+                  <Th>Index</Th>
+                  <Th>Action</Th>
+                  <Th>Path</Th>
+                  <Th>Mime</Th>
+                  <Th>Parameters</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {viewPackets.map((packet, index) =>
+                  <OriginTabRow
+                    key={`${packet.origin}/${packet.path}`}
+                    index={1 + index + (page - 1) * packetsPerPage}
+                    packet={packet}
+                  />
+                )}
+              </Tbody>
+            </Table>
         }
-        <Pagination
-          id={origin}
-          page={page}
-          setPage={setPage}
-          maxPage={numPages}
-        />
+        <Box
+          mt="10px"
+          textAlign="right"
+        >
+          <Pagination
+            hrefHash={origin}
+            id={origin}
+            page={page}
+            setPage={onClickPagination}
+            maxPage={numPages}
+          />
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 }
 

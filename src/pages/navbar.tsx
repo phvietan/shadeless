@@ -9,12 +9,13 @@ import {
   MenuItem,
   Text,
 } from '@chakra-ui/react';
-import { Link } from 'wouter';
+import { Link, useLocation } from 'wouter';
 import { HamburgerIcon } from '@chakra-ui/icons';
-import { getCookie } from 'libs/cookie';
+import storage from 'libs/storage';
 
 function Navbar () {
-  const choosingProject = getCookie('project');
+  const setLocation = useLocation()[1];
+  const choosingProject = storage.getProject();
   return (
     <Flex
       bg="background.primary-green"
@@ -27,7 +28,7 @@ function Navbar () {
     >
       <HStack spacing={8} alignItems={'center'}>
         <Link href="/">Shadeless</Link>
-        <Link href="/projects">Projects</Link>
+        <Link href="/domains">Domains</Link>
       </HStack>
       <Menu>
         <MenuButton as={Button}
@@ -44,11 +45,15 @@ function Navbar () {
             size="xs"
             mr="25px"
             fontWeight="100"
-          >Choosing project: {choosingProject}</Text>
+          >
+            Choosing project: {choosingProject}
+          </Text>
           <HamburgerIcon />
         </MenuButton>
         <MenuList color="background.primary-black">
-          <MenuItem>Configuration</MenuItem>
+          <MenuItem onClick={() => setLocation('/projects')}>
+            Choose project
+          </MenuItem>
         </MenuList>
       </Menu>
     </Flex>

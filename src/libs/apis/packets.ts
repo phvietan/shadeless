@@ -1,5 +1,5 @@
-import { getCookie } from 'libs/cookie';
 import { GenericApi, GenericApiResponse } from './types';
+import storage from 'libs/storage';
 
 export type MetaData = {
   origins: string[];
@@ -96,14 +96,14 @@ export class PacketsApi extends GenericApi {
   }
 
   async getMetaData () {
-    const endpoint = this.endpoint + getCookie('project') + '/metadata';
+    const endpoint = this.endpoint + storage.getProject() + '/metadata';
     const data = await fetch(endpoint);
     const response = await data.json();
     return response as Omit<GenericApiResponse, 'data'> & { data: MetaData };
   }
 
   async getNumberPacketsByOrigin (origin: string) {
-    const endpoint = this.endpoint + getCookie('project') + '/numberPackets';
+    const endpoint = this.endpoint + storage.getProject() + '/numberPackets';
     const params = { origin };
     const url = new URL(endpoint);
     url.search = new URLSearchParams(params).toString();
@@ -114,7 +114,7 @@ export class PacketsApi extends GenericApi {
   }
 
   async getPacketsByOrigin (origin: string, skip: number, limit: number) {
-    const endpoint = this.endpoint + getCookie('project') + '/packets';
+    const endpoint = this.endpoint + storage.getProject() + '/packets';
     const params = { origin, skip: skip.toString(), limit: limit.toString() };
     const url = new URL(endpoint);
     url.search = new URLSearchParams(params).toString();

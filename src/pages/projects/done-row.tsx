@@ -2,8 +2,8 @@
 import React from 'react';
 import { Box, Heading, Button, HStack, Text, Grid, Divider } from '@chakra-ui/react';
 import { dateToString } from 'libs/timing';
-import { getCookie } from 'libs/cookie';
 import { Project } from 'libs/apis/projects';
+import storage from 'libs/storage';
 
 type Props = {
   project: Project;
@@ -12,7 +12,7 @@ type Props = {
 }
 
 function DoneRow (props: Props) {
-  const currentProject = getCookie('project');
+  const currentProject = storage.getProject();
   const { project, deleteButton, setHacking } = props;
   return (
     <Box

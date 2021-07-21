@@ -1,9 +1,8 @@
-/* eslint-disable no-unused-vars */
 import React from 'react';
 import { Box, Heading, Button, HStack, Text, Grid, Divider } from '@chakra-ui/react';
-import { getCookie } from 'libs/cookie';
 import { dateToString } from 'libs/timing';
 import { Project } from 'libs/apis/projects';
+import storage from 'libs/storage';
 
 type Props = {
   project: Project;
@@ -12,7 +11,7 @@ type Props = {
   deleteButton: (project: Project) => void;
 }
 function HackingRow (props: Props) {
-  const currentProject = getCookie('project');
+  const currentProject = storage.getProject();
   const { project, setHacking, setDone, deleteButton } = props;
 
   return (
