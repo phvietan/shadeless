@@ -8,6 +8,10 @@ export type MetaData = {
 }
 
 export type Packet = {
+  requestPacketId: string;
+  requestPacketPrefix: string;
+  requestPacketIndex: number;
+
   toolName: string;
   method: string
   requestLength: number;
@@ -48,6 +52,9 @@ export const defaultMetaData: MetaData = {
 };
 
 export const defaultPacket: Packet = {
+  requestPacketId: '',
+  requestPacketIndex: 0,
+  requestPacketPrefix: '',
   toolName: '',
   method: '',
   requestLength: 0,
@@ -100,6 +107,36 @@ export class PacketsApi extends GenericApi {
     const data = await fetch(endpoint);
     const response = await data.json();
     return response as Omit<GenericApiResponse, 'data'> & { data: MetaData };
+  }
+
+  // Get TimeTravel Packets in: [left; left+number)
+  async getTimeTravelPacketsByPrefixAndRange (prefix: string, left: number, number: number) {
+    const endpoint = this.endpoint + storage.getProject() + '/timeTravel';
+    const params = { requestPacketId: `${prefix}.${left}`, number: number.toString() };
+    const url = new URL(endpoint);
+    url.search = new URLSearchParams(params).toString();
+    const data = await fetch(url.toString());
+    const response = await data.json();
+    return response as Omit<GenericApiResponse, 'data'> & { data: Packet[] };
+  }
+
+  // Get TimeTravel Packets in: [-range; +range]
+  async getTimeTravelPacketsById (requestPacketId: string, range: number) {
+    const arr = requestPacketId.split('.');
+    const [prefix, idx] = arr;
+    if (arr.length !== 2 || prefix.length !== 36) {
+      const response: Omit<GenericApiResponse, 'data'> & { data: Packet[] } = {
+        statusCode: 400,
+        error: 'Wrong requestPacketId format',
+        data: [],
+      };
+      return response;
+    }
+    return this.getTimeTravelPacketsByPrefixAndRange(
+      prefix,
+      Math.max(1, parseInt(idx) - range),
+      range * 2 + 1,
+    );
   }
 
   async getNumberPacketsByOrigin (origin: string) {

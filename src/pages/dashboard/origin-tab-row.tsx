@@ -2,6 +2,8 @@ import React from 'react';
 import { Tr, Td, Button } from '@chakra-ui/react';
 import { Packet } from 'libs/apis/packets';
 import { paramReflect, parseParameterAndReflected } from 'libs/helper';
+import { useLocation } from 'wouter';
+import { DEFAULT_TIME_TRAVEL_PACKETS_RANGE } from 'pages/TimeTravel';
 
 type Props = {
   packet: Packet;
@@ -11,6 +13,8 @@ type Props = {
 function OriginTabRow (props: Props) {
   const { packet, index } = props;
   const [paramReflected, setParamReflected] = React.useState<paramReflect[]>([]);
+  const setLocation = useLocation()[1];
+
   React.useEffect(() => {
     const result = parseParameterAndReflected(
       packet.parameters,
@@ -20,7 +24,7 @@ function OriginTabRow (props: Props) {
   }, [packet]);
 
   const timeMachine = async () => {
-    console.log(packet);
+    setLocation(`/timeTravel?range=${DEFAULT_TIME_TRAVEL_PACKETS_RANGE}&requestPacketId=${packet.requestPacketId}`);
   };
 
   return (

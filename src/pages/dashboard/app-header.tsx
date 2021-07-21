@@ -15,7 +15,7 @@ function AppHeader (props: Props) {
     <Grid
       gridTemplateColumns={['1fr', null, null, '2fr 3fr']}
       p="20px"
-      px="5%"
+      px="2%"
       gap="20px"
     >
       <ShowOrigins

@@ -17,7 +17,7 @@ function DoneRow (props: Props) {
   return (
     <Box
       width="100%"
-      p="3%"
+      p="2%"
       mt="5px"
       border={(currentProject === project.name) ? '1px solid red' : '1px solid black'}
     >

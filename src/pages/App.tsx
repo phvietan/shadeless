@@ -38,7 +38,7 @@ function AppPage () {
       <Navbar />
 
       <AppHeader metaData={metaData} isLoading={isLoading} />
-      <Box px="5%">
+      <Box px="2%">
         {isLoading &&
           <Box
             bg="background.primary-white"

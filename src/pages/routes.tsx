@@ -6,12 +6,13 @@ import ProjectsPage from 'pages/Projects';
 
 import Footer from 'pages/footer';
 import DomainsPage from './Domains';
+import TimeTravelPage from './TimeTravel';
 import storage from 'libs/storage';
 
 function Routes () {
-  const cookie = storage.getProject();
+  const choosingProject = storage.getProject();
   const [location] = useLocation();
-  if (!cookie && location !== '/projects') return <Redirect to='/projects' />;
+  if (!choosingProject && location !== '/projects') return <Redirect to='/projects' />;
   return (
     <>
       <Route path="/">
@@ -22,6 +23,9 @@ function Routes () {
       </Route>
       <Route path="/domains">
         <DomainsPage />
+      </Route>
+      <Route path="/timeTravel">
+        <TimeTravelPage />
       </Route>
       <Footer />
     </>

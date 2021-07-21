@@ -54,7 +54,7 @@ function ShowProjectsBox (props: Props) {
       mt="5vh"
       mx="10%"
       borderRadius="5px"
-      px="3%" py="2%"
+      px="2%" py="2%"
       bg="white"
       shadow="xs"
     >

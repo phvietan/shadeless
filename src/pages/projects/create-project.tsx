@@ -25,7 +25,7 @@ function CreateProjectBox (props: Props) {
     <Box
       mt="10vh"
       mx="10%"
-      px="3%" py="2%"
+      px="2%" py="2%"
       shadow="xs"
       bg="white"
       borderRadius="5px"
