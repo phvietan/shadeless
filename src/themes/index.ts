@@ -9,7 +9,10 @@ const colors = {
     'primary-black': '#0B2B5A',
     'primary-green': '#175020',
     'primary-white': 'white',
-    'primary-grey': '#EAF6EC'
+    'primary-grey': '#EAF6EC',
+    'focus-orange': 'DarkMagenta',
+    'focus-white': 'GhostWhite',
+    'focus-black': 'black',
   }
 };
 const fonts = {

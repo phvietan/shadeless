@@ -1,21 +1,14 @@
 import React from 'react';
 import { Box, Button, SkeletonText, Text } from '@chakra-ui/react';
-import { paramReflect, parseParameterAndReflected } from 'libs/helper';
 
 type Props = {
   isLoading: boolean;
   parameters: string[];
-  reflectedParameters: string[];
+  reflectedParameters: Record<string, string>;
 }
 
 function ShowParameters (props: Props) {
   const { parameters, reflectedParameters, isLoading } = props;
-  const [paramReflected, setParamReflected] = React.useState<paramReflect[]>([]);
-  React.useEffect(() => {
-    const result = parseParameterAndReflected(parameters, reflectedParameters);
-    setParamReflected(result);
-  }, [parameters, reflectedParameters]);
-
   return (
     <Box>
       <Text as="h1"
@@ -38,15 +31,15 @@ function ShowParameters (props: Props) {
         {isLoading &&
           <SkeletonText mt="30px" p="20px" noOfLines={7} spacing="4" />
         }
-        {paramReflected.map(parameter =>
+        {parameters.map(param =>
           <Button
-            key={`parameter-${parameter.value}`}
+            key={`parameter-${param}`}
             size="xs"
             borderRadius="5px"
             m="2px"
-            colorScheme={parameter.reflected ? 'green' : 'blackAlpha'}
+            colorScheme={param in reflectedParameters ? 'green' : 'blackAlpha'}
           >
-            {parameter.value}
+            {param}
           </Button>
         )}
       </Box>

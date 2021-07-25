@@ -49,11 +49,11 @@ function OriginTab (props: Props) {
     <>
       <Grid
         gridTemplateColumns="1fr 1fr"
-        bg="background.primary-black"
+        bg={isFocus ? 'background.focus-orange' : 'background.primary-black'}
         borderRadius="5px 0px"
         id={origin}
         p="10px"
-        color="white"
+        color={isFocus ? 'background.focus-white' : 'white'}
       >
         <Link
           justifySelf="start"
@@ -70,7 +70,6 @@ function OriginTab (props: Props) {
 
       <Box
         bg="background.primary-white"
-        border={isFocus ? '2px solid black' : ''}
         p="10px"
         pl="30px"
         overflowY="scroll"

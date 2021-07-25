@@ -29,7 +29,7 @@ function TimeTravelPage () {
       const requestPacketId = searchParams.get('requestPacketId') ?? '';
       const arr = requestPacketId.split('.');
       const index = arr[1] ?? '';
-      location.href += '#' + index;
+      window.location.hash = index;
     }
   }, [isLoading]);
 

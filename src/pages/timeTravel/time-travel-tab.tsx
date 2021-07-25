@@ -1,7 +1,8 @@
 import React from 'react';
 import { Packet } from 'libs/apis/packets';
-import { Box, Grid, SkeletonText, Text } from '@chakra-ui/react';
+import { Box, Grid, Text } from '@chakra-ui/react';
 import { FilesApi } from 'libs/apis/files';
+import TimeTravelBody from './time-travel-body';
 
 const filesApiInstance = FilesApi.getInstance();
 
@@ -11,8 +12,8 @@ type Props = {
 function TimeTravelTab (props: Props) {
   const { packet } = props;
   const [isLoading, setIsLoading] = React.useState(true);
-  const [requestBody, setRequestBody] = React.useState('');
-  const [responseBody, setResponseBody] = React.useState('');
+  const [requestBody, setRequestBody] = React.useState<string>('');
+  const [responseBody, setResponseBody] = React.useState<string>('');
 
   const getBodies = async () => {
     const reqBody = await filesApiInstance.getFileContentFromId(packet.requestBodyHash);
@@ -46,55 +47,28 @@ function TimeTravelTab (props: Props) {
         </Text>
       </Box>
       <Grid gridTemplateColumns="1fr 1fr">
-        <Box
-          p="3%"
-          borderRight="1px solid LightGray"
-          borderBottom="1px solid LightGray"
-        >
-          {packet.requestHeaders.map((header, index) =>
-            <Text
-              key={`req-header-${packet.requestPacketId}-${index}`}
-              mt="1px"
-            >
-              {header}
-            </Text>
-          )}
-        </Box>
-        <Box
-          p="3%"
-          borderBottom="1px solid LightGray"
-        >
-          {packet.responseHeaders.map((header, index) =>
-            <Text
-              key={`resp-header-${packet.requestPacketId}-${index}`}
-              mt="1px"
-            >
-              {header}
-            </Text>
-          )}
-        </Box>
+        <TimeTravelBody
+          isLoading={false}
+          reflectedParameters={packet.reflectedParameters}
+          content={packet.requestHeaders.join('\n')}
+        />
+        <TimeTravelBody
+          isLoading={false}
+          reflectedParameters={packet.reflectedParameters}
+          content={packet.responseHeaders.join('\n')}
+        />
       </Grid>
       <Grid gridTemplateColumns="1fr 1fr">
-        <Box
-          p="3%"
-          borderRight="1px solid LightGray"
-        >
-          {isLoading &&
-            <SkeletonText mt="30px" p="20px" noOfLines={7} spacing="4" />
-          }
-          <Text as="p">
-            {requestBody}
-          </Text>
-        </Box>
-
-        <Box p="3%">
-          {isLoading &&
-            <SkeletonText mt="30px" p="20px" noOfLines={7} spacing="4" />
-          }
-          <Text as="p">
-            {responseBody}
-          </Text>
-        </Box>
+        <TimeTravelBody
+          isLoading={isLoading}
+          reflectedParameters={packet.reflectedParameters}
+          content={requestBody}
+        />
+        <TimeTravelBody
+          isLoading={isLoading}
+          reflectedParameters={packet.reflectedParameters}
+          content={responseBody}
+        />
       </Grid>
     </Box>
   );

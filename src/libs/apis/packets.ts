@@ -4,7 +4,7 @@ import storage from 'libs/storage';
 export type MetaData = {
   origins: string[];
   parameters: string[];
-  reflectedParameters: string[];
+  reflectedParameters: Record<string, string>;
 }
 
 export type Packet = {
@@ -41,14 +41,14 @@ export type Packet = {
   responseHeaders: string[];
 
   rtt: number;
-  reflectedParameters: string[];
+  reflectedParameters: Record<string, string>;
   codeName: string;
 }
 
 export const defaultMetaData: MetaData = {
   origins: [],
   parameters: [],
-  reflectedParameters: [],
+  reflectedParameters: {},
 };
 
 export const defaultPacket: Packet = {
@@ -84,7 +84,7 @@ export const defaultPacket: Packet = {
   responseHeaders: [],
 
   rtt: 0,
-  reflectedParameters: [],
+  reflectedParameters: {},
   codeName: '',
 };
 

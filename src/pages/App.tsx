@@ -10,7 +10,6 @@ const packetApiInstance = PacketsApi.getInstance();
 
 function AppPage () {
   const [isLoading, setIsLoading] = React.useState(true);
-  const [viewOrigins, setViewOrigins] = React.useState<string[]>([]);
   const [metaData, setMetaData] = React.useState(defaultMetaData);
   const currentLocation = useHashLocation();
 
@@ -20,10 +19,7 @@ function AppPage () {
 
     // Blacklist wappalyzer because it flood our page
     result.origins = result.origins.filter(o => o !== 'https://ad.wappalyzer.com' && o !== '');
-    result.parameters = result.parameters.filter(p => p !== '');
-    result.reflectedParameters = result.reflectedParameters.filter(p => p !== '');
     setMetaData(result);
-    setViewOrigins(result.origins);
     setIsLoading(false);
   };
   React.useEffect(() => {
@@ -51,7 +47,7 @@ function AppPage () {
             />
           </Box>
         }
-        {viewOrigins.map(origin =>
+        {metaData.origins.map(origin =>
           <OriginTab
             key={`origintab-${origin}`}
             origin={origin}

@@ -20,19 +20,28 @@ function Navbar () {
     <Flex
       bg="background.primary-green"
       px={4}
-      h={14}
       color="background.primary-white"
       boxShadow="xs"
       alignItems={'center'}
       justifyContent={'space-between'}
     >
       <HStack spacing={8} alignItems={'center'}>
-        <Link href="/">Shadeless</Link>
+          <Text
+            as="h1"
+            fontSize="4xl"
+            p="10px"
+            ml="10%"
+            mr="5%"
+          >
+            <Link href="/">Shadeless</Link>
+          </Text>
+
         <Link href="/domains">Domains</Link>
       </HStack>
       <Menu>
         <MenuButton as={Button}
           bg="background.600"
+          mr="5%"
           _hover={{
             bg: 'background.600',
           }}
