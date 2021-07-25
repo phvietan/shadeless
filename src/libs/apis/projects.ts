@@ -7,12 +7,19 @@ export enum ProjectStatus {
   DONE = 'done',
 }
 
+export const defaultProject: Project = {
+  id: '',
+  name: '',
+  description: '',
+  status: ProjectStatus.TODO,
+  createdAt: new Date(),
+};
+
 export type Project = {
   id: string,
   name: string,
   description: string,
   status: ProjectStatus,
-  projectStatus: ProjectStatus,
   createdAt: Date,
 };
 
@@ -30,6 +37,11 @@ export class ProjectsApi extends GenericApi {
     return this.instance;
   }
 
+  async getOne (name: string) {
+    const project = await super.getOne(name);
+    return project as Omit<GenericApiResponse, 'data'> & { data: Project };
+  }
+
   async getAll () {
     const allProjects = await super.getAll();
     return allProjects as Omit<GenericApiResponse, 'data'> & { data: Project[] };
@@ -45,8 +57,8 @@ export class ProjectsApi extends GenericApi {
     return response as StringApiResponse;
   }
 
-  async delete (identifier: string) {
-    const response = await super.delete(identifier);
+  async delete (identifier: string, options: any = {}) {
+    const response = await super.delete(identifier, options);
     return response as StringApiResponse;
   }
 }

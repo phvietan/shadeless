@@ -11,6 +11,7 @@ import TimeTravelPage from './TimeTravel';
 import storage from 'libs/storage';
 import BackendNotUp from './Backend-not-up';
 import Page404 from './Page404';
+import ViewProjectPage from './projects/ViewProject';
 
 const healthCheckApi = async (): Promise<{ status: number, data: string }> => {
   try {
@@ -41,7 +42,6 @@ function Routes () {
   React.useEffect(() => {
     (async function check () {
       const { status, data } = await healthCheckApi();
-      console.log({ status, data });
       if (data === 'Health check ok' && status === 200) {
         setIsBackendUp(ServerStatus.UP);
       } else {
@@ -62,6 +62,9 @@ function Routes () {
       </Route>
       <Route path="/projects">
         <ProjectsPage />
+      </Route>
+      <Route path="/projects/:projectName">
+        {params => <ViewProjectPage projectName={params.projectName} />}
       </Route>
       <Route path="/domains">
         <DomainsPage />

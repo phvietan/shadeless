@@ -47,7 +47,7 @@ export class GenericApi {
   }
 
   protected async getOne (identifier: string): Promise<any> {
-    const data = await fetch(this.endpoint + identifier);
+    const data = await fetch(this.endpoint + identifier, { redirect: 'follow' });
     const response = await data.json();
     return response;
   }
@@ -70,8 +70,13 @@ export class GenericApi {
     return response;
   }
 
-  protected async delete (identifier: string): Promise<any> {
-    const data = await fetch(this.endpoint + identifier, GenericApi.deleteOptions);
+  protected async delete (identifier: string, options: any): Promise<any> {
+    const data = await fetch(this.endpoint + identifier,
+      {
+        ...GenericApi.deleteOptions,
+        body: JSON.stringify(options),
+      }
+    );
     const response = await data.json();
     return response;
   }

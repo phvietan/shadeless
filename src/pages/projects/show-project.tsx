@@ -1,10 +1,25 @@
 import React from 'react';
-import { Box, Grid, Heading, useToast } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Grid,
+  Heading,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
+  useToast,
+  Text,
+} from '@chakra-ui/react';
 import { notify } from 'libs/notify';
 import DoneRow from './done-row';
 import TodoRow from './todo-row';
 import HackingRow from './hacking-row';
-import { Project, ProjectsApi, ProjectStatus } from 'libs/apis/projects';
+import { defaultProject, Project, ProjectsApi, ProjectStatus } from 'libs/apis/projects';
 import storage from 'libs/storage';
 
 const projectApiInstance = ProjectsApi.getInstance();
@@ -18,6 +33,11 @@ function ShowProjectsBox (props: Props) {
   const toast = useToast();
   const currentProject = storage.getProject();
 
+  // For deleting project
+  const [deletingProject, setDeletingProject] = React.useState<Project>(defaultProject);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  // For viewing
   const [todoProjects, setTodoProjects] = React.useState<Project[]>([]);
   const [hackingProjects, setHackingProjects] = React.useState<Project[]>([]);
   const [doneProjects, setDoneProjects] = React.useState<Project[]>([]);
@@ -44,10 +64,22 @@ function ShowProjectsBox (props: Props) {
     await getProjects();
   };
   const deleteProject = async (project: Project) => {
+    setDeletingProject(project);
+    onOpen();
+  };
+  const deleteProjectOnly = async (project: Project) => {
     if (currentProject === project.name) storage.delete('project');
     const response = await projectApiInstance.delete(project.id);
     notify(toast, response);
     await getProjects();
+    onClose();
+  };
+  const deleteAll = async (project: Project) => {
+    if (currentProject === project.name) storage.delete('project');
+    const response = await projectApiInstance.delete(project.id, { all: 1 });
+    notify(toast, response);
+    await getProjects();
+    onClose();
   };
   return (
     <Box
@@ -103,6 +135,48 @@ function ShowProjectsBox (props: Props) {
           )}
         </Box>
       </Grid>
+
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        isCentered
+      >
+        <ModalOverlay />
+        <ModalContent
+          colorScheme="red"
+          p="10px"
+        >
+          <ModalHeader>Are you sure to delete
+            <Text as="span" color="black" mx="5px" fontSize="2xl">{deletingProject.name}</Text>?
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text>
+              - <Text as="span" color="orange">Project only</Text>: delete project only (creating project with same name still persist packets data).
+            </Text>
+            <Text>
+              - <Text as="span" color="red">Delete all</Text>: delete project with every packets inside that project
+            </Text>
+
+          </ModalBody>
+
+          <ModalFooter>
+            <Button
+              colorScheme="orange"
+              mr={2}
+              onClick={() => deleteProjectOnly(deletingProject)}
+            >
+              Project only
+            </Button>
+            <Button
+              colorScheme="red"
+              onClick={() => deleteAll(deletingProject)}
+            >
+              Delete all
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
 
     </Box>
   );
