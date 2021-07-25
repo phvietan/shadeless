@@ -69,14 +69,14 @@ function ShowProjectsBox (props: Props) {
   };
   const deleteProjectOnly = async (project: Project) => {
     if (currentProject === project.name) storage.delete('project');
-    const response = await projectApiInstance.delete(project.id);
+    const response = await projectApiInstance.delete(project.id, { all: false });
     notify(toast, response);
     await getProjects();
     onClose();
   };
   const deleteAll = async (project: Project) => {
     if (currentProject === project.name) storage.delete('project');
-    const response = await projectApiInstance.delete(project.id, { all: 1 });
+    const response = await projectApiInstance.delete(project.id, { all: true });
     notify(toast, response);
     await getProjects();
     onClose();

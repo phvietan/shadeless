@@ -59,23 +59,32 @@ function Routes () {
     <Switch>
       <Route path="/">
         <AppPage />
+        <Footer />
       </Route>
       <Route path="/projects">
         <ProjectsPage />
+        <Footer />
       </Route>
       <Route path="/projects/:projectName">
-        {params => <ViewProjectPage projectName={params.projectName} />}
+        {params =>
+          <>
+            <ViewProjectPage projectName={params.projectName} />
+            <Footer />
+          </>
+        }
       </Route>
       <Route path="/domains">
         <DomainsPage />
+        <Footer />
       </Route>
       <Route path="/timeTravel">
         <TimeTravelPage />
+        <Footer />
       </Route>
       <Route>
         <Page404 />
+        <Footer />
       </Route>
-      <Footer />
     </Switch>
   );
 }

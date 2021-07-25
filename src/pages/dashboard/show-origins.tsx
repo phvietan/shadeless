@@ -22,7 +22,7 @@ function ShowOrigins (props: Props) {
         bg="background.primary-white"
         p="10px"
         pl="30px"
-        height="50vh"
+        height={origins.length !== 0 ? '50vh' : ''}
         overflowY="scroll"
         borderRadius="5px"
         boxShadow="sm"
@@ -38,6 +38,15 @@ function ShowOrigins (props: Props) {
             <Link href={'#' + origin}>{origin}</Link>
           </Text>
         )}
+        {origins.length === 0 &&
+          <Text
+            textAlign="center"
+            fontStyle="italic"
+            my="10px"
+          >
+            No origin found in database
+          </Text>
+        }
       </Box>
     </Box>
   );
