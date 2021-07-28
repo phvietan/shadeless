@@ -59,12 +59,12 @@ function Navbar () {
           <HamburgerIcon />
         </MenuButton>
         <MenuList color="background.primary-black">
-          <Link to={'/projects/' + choosingProject}>
+          <Link href={'/projects/' + choosingProject}>
             <MenuItem>
               Config
             </MenuItem>
           </Link>
-          <Link to={'/projects'}>
+          <Link href={'/projects'}>
             <MenuItem>
                 Choose project
             </MenuItem>

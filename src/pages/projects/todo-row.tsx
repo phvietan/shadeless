@@ -1,9 +1,10 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
-import { Box, Heading, Button, HStack, Text, Grid, Divider } from '@chakra-ui/react';
+import { Box, Heading, Button, HStack, Text, Grid, Divider, Link } from '@chakra-ui/react';
 import { dateToString } from 'libs/timing';
 import { Project } from 'libs/apis/projects';
 import storage from 'libs/storage';
+import ProjectDescription from './project-description';
 
 type Props = {
   project: Project;
@@ -21,41 +22,7 @@ function TodoRow (props: Props) {
       mt="5px"
       border={(currentProject === project.name) ? '1px solid red' : '1px solid black'}
     >
-      <Grid
-        gridTemplateColumns="1fr 1fr"
-      >
-        <Heading
-          as="h4"
-          fontSize="2xl"
-          w="100%"
-          justifySelf="start"
-        >
-          {project.name}
-        </Heading>
-
-        <Text
-          as="i"
-          fontSize="xs"
-          justifySelf="end"
-        >
-          Created at: {dateToString(project.createdAt)}
-        </Text>
-
-        <Heading
-          as="h5"
-          lineHeight="1.4em"
-          fontWeight="100"
-          ml="10px"
-          fontSize="xs"
-          w="100%"
-          justifySelf="start"
-        >
-          {project.description}
-        </Heading>
-
-      </Grid>
-
-      <Divider my="8px" />
+      <ProjectDescription project={project}/>
       <HStack>
         <Button
           size="xs"
@@ -67,9 +34,8 @@ function TodoRow (props: Props) {
         <Button
           size="xs"
           colorScheme="orange"
-          onClick={() => alert('Is implementing')}
         >
-         Edit
+          <Link href={'/projects/' + project.name}>Edit</Link>
         </Button>
         <Button
           size="xs"

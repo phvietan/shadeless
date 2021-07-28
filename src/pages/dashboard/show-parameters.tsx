@@ -42,7 +42,7 @@ function ShowParameters (props: Props) {
             {param}
           </Button>
         )}
-        {parameters.length === 0 &&
+        {parameters.length === 0 && !isLoading &&
           <Text
             textAlign="center"
             fontStyle="italic"

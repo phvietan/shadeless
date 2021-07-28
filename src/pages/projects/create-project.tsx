@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heading, Button, Input, Box, useToast } from '@chakra-ui/react';
+import { Heading, Button, Input, Box, useToast, Textarea } from '@chakra-ui/react';
 import { ProjectsApi } from 'libs/apis/projects';
 import { notify } from 'libs/notify';
 
@@ -44,7 +44,7 @@ function CreateProjectBox (props: Props) {
         placeholder="Project name: i.e viettel"
         onChange={(event) => setName(event.target.value)}
       />
-      <Input
+      <Textarea
         border="1px solid black"
         bg="white"
         mb={3}

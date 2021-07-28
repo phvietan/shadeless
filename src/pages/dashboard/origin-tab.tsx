@@ -38,7 +38,7 @@ function OriginTab (props: Props) {
   React.useEffect(() => {
     getNumberPacketsByOrigin();
     getPacketsByOrigin();
-  }, []);
+  }, [origin]);
 
   const onClickPagination = (p: number) => {
     setPage(p);

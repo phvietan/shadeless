@@ -124,7 +124,7 @@ export class PacketsApi extends GenericApi {
   async getTimeTravelPacketsById (requestPacketId: string, range: number) {
     const arr = requestPacketId.split('.');
     const [prefix, idx] = arr;
-    if (arr.length !== 2 || prefix.length !== 36) {
+    if (arr.length !== 2) {
       const response: Omit<GenericApiResponse, 'data'> & { data: Packet[] } = {
         statusCode: 400,
         error: 'Wrong requestPacketId format',

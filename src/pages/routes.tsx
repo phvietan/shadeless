@@ -11,7 +11,7 @@ import TimeTravelPage from './TimeTravel';
 import storage from 'libs/storage';
 import BackendNotUp from './Backend-not-up';
 import Page404 from './Page404';
-import ViewProjectPage from './projects/ViewProject';
+import ViewCurrentProjectPage from './projects/ViewCurrentProject';
 
 const healthCheckApi = async (): Promise<{ status: number, data: string }> => {
   try {
@@ -68,7 +68,7 @@ function Routes () {
       <Route path="/projects/:projectName">
         {params =>
           <>
-            <ViewProjectPage projectName={params.projectName} />
+            <ViewCurrentProjectPage projectName={params.projectName} />
             <Footer />
           </>
         }

@@ -38,7 +38,7 @@ function ShowOrigins (props: Props) {
             <Link href={'#' + origin}>{origin}</Link>
           </Text>
         )}
-        {origins.length === 0 &&
+        {origins.length === 0 && !isLoading &&
           <Text
             textAlign="center"
             fontStyle="italic"

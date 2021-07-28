@@ -24,7 +24,7 @@ function TimeTravelTab (props: Props) {
   };
   React.useEffect(() => {
     getBodies();
-  }, []);
+  }, [packet]);
 
   return (
     <Box
