@@ -53,13 +53,13 @@ function ShowProjectsBox (props: Props) {
 
   const setHacking = async (project: Project) => {
     storage.set('project', project.name);
-    const response = await projectApiInstance.edit({ status: ProjectStatus.HACKING }, project.id);
+    const response = await projectApiInstance.editStatus(ProjectStatus.HACKING, project.id);
     notify(toast, response);
     await getProjects();
   };
   const setDone = async (project: Project) => {
     if (currentProject === project.name) storage.delete('project');
-    const response = await projectApiInstance.edit({ status: ProjectStatus.DONE }, project.id);
+    const response = await projectApiInstance.editStatus(ProjectStatus.DONE, project.id);
     notify(toast, response);
     await getProjects();
   };

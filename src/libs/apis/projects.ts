@@ -7,11 +7,27 @@ export enum ProjectStatus {
   DONE = 'done',
 }
 
+export enum BlacklistType {
+  BLACKLIST_REGEX = 'regex',
+  BLACKLIST_VALUE = 'value',
+}
+
+export function convertStringToBlacklistType (s: string): BlacklistType {
+  if (s === BlacklistType.BLACKLIST_REGEX) return BlacklistType.BLACKLIST_REGEX;
+  return BlacklistType.BLACKLIST_VALUE;
+}
+
+export type Blacklist = {
+  value: string,
+  type: BlacklistType,
+}
+
 export const defaultProject: Project = {
   id: '',
   name: '',
   description: '',
   status: ProjectStatus.TODO,
+  blacklist: [],
   createdAt: new Date(),
 };
 
@@ -20,6 +36,7 @@ export type Project = {
   name: string,
   description: string,
   status: ProjectStatus,
+  blacklist: Blacklist[],
   createdAt: Date,
 };
 
@@ -49,6 +66,11 @@ export class ProjectsApi extends GenericApi {
 
   async create (body: { name: string; description: string }) {
     const response = await super.post(body);
+    return response as StringApiResponse;
+  }
+
+  async editStatus (status: ProjectStatus, identifier: string) {
+    const response = await super.put({ status }, identifier + '/status');
     return response as StringApiResponse;
   }
 

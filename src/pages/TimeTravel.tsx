@@ -1,5 +1,5 @@
 import React from 'react';
-import Navbar from 'pages/navbar';
+import Navbar from 'pages/common/navbar';
 import { Box } from '@chakra-ui/react';
 import { Packet, PacketsApi } from 'libs/apis/packets';
 import TimeTravelTab from 'pages/timeTravel/time-travel-tab';

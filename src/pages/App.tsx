@@ -1,5 +1,5 @@
 import React from 'react';
-import Navbar from 'pages/navbar';
+import Navbar from 'pages/common/navbar';
 import { Box, SkeletonText } from '@chakra-ui/react';
 import { defaultMetaData, PacketsApi } from 'libs/apis/packets';
 import OriginTab from 'pages/dashboard/origin-tab';

@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Text, Th, Tr, Table, Thead, Tbody, SkeletonText, Grid, Link } from '@chakra-ui/react';
 import { Packet, PacketsApi } from 'libs/apis/packets';
 import OriginTabRow from './origin-tab-row';
-import Pagination from 'pages/pagination';
+import Pagination from 'pages/common/pagination';
 import storage from 'libs/storage';
 
 const packetApiInstance = PacketsApi.getInstance();

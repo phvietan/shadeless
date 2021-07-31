@@ -5,13 +5,13 @@ import { Route, Redirect, useLocation, Switch } from 'wouter';
 import AppPage from 'pages/App';
 import ProjectsPage from 'pages/Projects';
 
-import Footer from 'pages/footer';
+import Footer from 'pages/common/footer';
 import DomainsPage from './Domains';
 import TimeTravelPage from './TimeTravel';
 import storage from 'libs/storage';
 import BackendNotUp from './Backend-not-up';
 import Page404 from './Page404';
-import ViewCurrentProjectPage from './projects/ViewCurrentProject';
+import ConfigProjectPage from './ConfigProject';
 
 const healthCheckApi = async (): Promise<{ status: number, data: string }> => {
   try {
@@ -68,7 +68,7 @@ function Routes () {
       <Route path="/projects/:projectName">
         {params =>
           <>
-            <ViewCurrentProjectPage projectName={params.projectName} />
+            <ConfigProjectPage projectName={params.projectName} />
             <Footer />
           </>
         }

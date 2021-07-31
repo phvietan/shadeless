@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box } from '@chakra-ui/react';
-import Navbar from './navbar';
+import Navbar from './common/navbar';
 
 function DomainsPage (): JSX.Element {
   return (

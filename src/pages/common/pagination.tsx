@@ -62,7 +62,9 @@ function Pagination (props: Props) {
   const { page, maxPage, setPage, id, hrefHash } = props;
 
   const arrPages = [];
-  for (let i = page - PAGINATION_NUM_SHOW; i <= page + PAGINATION_NUM_SHOW; i += 1) { if (i >= 1 && i <= maxPage) arrPages.push(i); }
+  for (let i = page - PAGINATION_NUM_SHOW; i <= page + PAGINATION_NUM_SHOW; i += 1) {
+    if (i >= 1 && i <= maxPage) arrPages.push(i);
+  }
 
   return (
     <>

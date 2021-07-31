@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box } from '@chakra-ui/react';
-import Navbar from 'pages/navbar';
+import Navbar from 'pages/common/navbar';
 import ShowProjectsBox from 'pages/projects/show-project';
 import CreateProjectBox from 'pages/projects/create-project';
 import { Project, ProjectsApi } from 'libs/apis/projects';
