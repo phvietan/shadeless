@@ -1,7 +1,7 @@
 import { ToastId, UseToastOptions } from '@chakra-ui/react';
 import { StringApiResponse } from './apis/types';
 
-type ToastType = {
+export type ToastType = {
   (options?: UseToastOptions | undefined): string | number | undefined;
   close: (id: ToastId) => void;
   closeAll: (...args: any[]) => void;

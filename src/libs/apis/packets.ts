@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { GenericApi, GenericApiResponse } from './types';
 import storage from 'libs/storage';
 
@@ -43,6 +44,8 @@ export type Packet = {
   rtt: number;
   reflectedParameters: Record<string, string>;
   codeName: string;
+
+  created_at?: string;
 }
 
 export const defaultMetaData: MetaData = {

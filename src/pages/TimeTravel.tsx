@@ -1,6 +1,6 @@
 import React from 'react';
 import Navbar from 'pages/common/navbar';
-import { Box } from '@chakra-ui/react';
+import { Box, useToast } from '@chakra-ui/react';
 import { Packet, PacketsApi } from 'libs/apis/packets';
 import TimeTravelTab from 'pages/timeTravel/time-travel-tab';
 
@@ -8,6 +8,7 @@ export const DEFAULT_TIME_TRAVEL_PACKETS_RANGE = 5;
 const packetApiInstance = PacketsApi.getInstance();
 
 function TimeTravelPage () {
+  const toast = useToast();
   const [isLoading, setIsLoading] = React.useState(true);
   const [timeTravelPackets, setTimeTravelPackets] = React.useState<Packet[]>([]);
 
@@ -45,6 +46,7 @@ function TimeTravelPage () {
       >
         {timeTravelPackets.map(packet =>
           <TimeTravelTab
+            toast={toast}
             key={`timetraveltab-${packet.requestPacketId}`}
             packet={packet}
           />

@@ -12,6 +12,8 @@ import storage from 'libs/storage';
 import BackendNotUp from './Backend-not-up';
 import Page404 from './Page404';
 import ConfigProjectPage from './ConfigProject';
+import { notify } from 'libs/notify';
+import { useToast } from '@chakra-ui/react';
 
 const healthCheckApi = async (): Promise<{ status: number, data: string }> => {
   try {
@@ -38,6 +40,7 @@ function Routes () {
   const [isBackendUp, setIsBackendUp] = React.useState<ServerStatus>(ServerStatus.REQUESTING);
   const choosingProject = storage.getProject();
   const [location] = useLocation();
+  const toast = useToast();
 
   React.useEffect(() => {
     (async function check () {
@@ -54,7 +57,10 @@ function Routes () {
     return <BackendNotUp />;
   }
 
-  if (!choosingProject && location !== '/projects') return <Redirect to='/projects' />;
+  if (!choosingProject && location !== '/projects') {
+    notify(toast, { statusCode: 500, data: '', error: 'You must choose project before doing anything else' });
+    return <Redirect to='/projects' />;
+  }
   return (
     <Switch>
       <Route path="/">
