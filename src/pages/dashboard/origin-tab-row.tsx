@@ -1,21 +1,35 @@
 import React from 'react';
-import { Tr, Td, Button, Tooltip, Text } from '@chakra-ui/react';
+import { Tr, Td, Button, Tooltip, Text, Image } from '@chakra-ui/react';
 import { Packet } from 'libs/apis/packets';
 import { useLocation } from 'wouter';
 import { DEFAULT_TIME_TRAVEL_PACKETS_RANGE } from 'pages/TimeTravel';
 
-type Props = {
+type MimeTypeProps = {
   packet: Packet;
 };
+function MimeImage (props: MimeTypeProps) {
+  const { packet } = props;
 
-const shortenPath = (path: string): string => {
-  // const linebreak = 110;
-  // const arr = [];
-  // for (let i = 0; i < path.length; i += linebreak) {
-  //   arr.push(path.substr(i, linebreak));
-  // }
-  // return arr.join('\n');
-  return path;
+  const parseTypeToFileName = (type: string): string => {
+    const lowercase = type.toLocaleLowerCase();
+    if (lowercase === 'jpeg' || lowercase === 'png' || lowercase === 'image') return 'image.png';
+    if (['css', 'html', 'json', 'text', 'gif', 'script', 'svg'].includes(lowercase)) return lowercase + '.png';
+    return 'dat.png';
+  };
+
+  const filename = parseTypeToFileName(packet.responseMimeType);
+  return (
+    <Image
+      src={`/mime/${filename}`}
+      w="32px"
+      h="32px"
+      ml="43%"
+    />
+  );
+}
+
+type Props = {
+  packet: Packet;
 };
 
 function OriginTabRow (props: Props) {
@@ -39,8 +53,10 @@ function OriginTabRow (props: Props) {
           </Button>
         </Tooltip>
       </Td>
-      <Td width="40%"><Text wordBreak="break-all">{shortenPath(packet.path)}</Text></Td>
-      <Td textAlign="center">{packet.responseMimeType}</Td>
+      <Td width="40%"><Text wordBreak="break-all">{packet.path}</Text></Td>
+      <Td textAlign="center">
+        <MimeImage packet={packet} />
+      </Td>
       <Td width="40%">
         {packet.parameters.map((param, index) =>
           <Button

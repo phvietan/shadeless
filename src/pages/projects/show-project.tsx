@@ -70,6 +70,7 @@ function ShowProjectsBox (props: Props) {
   const deleteProjectOnly = async (project: Project) => {
     if (currentProject === project.name) storage.delete('project');
     const response = await projectApiInstance.delete(project.id, { all: false });
+    await storage.cleanNumPacketsPerPage();
     notify(toast, response);
     await getProjects();
     onClose();
@@ -77,6 +78,7 @@ function ShowProjectsBox (props: Props) {
   const deleteAll = async (project: Project) => {
     if (currentProject === project.name) storage.delete('project');
     const response = await projectApiInstance.delete(project.id, { all: true });
+    await storage.cleanNumPacketsPerPage();
     notify(toast, response);
     await getProjects();
     onClose();

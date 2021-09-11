@@ -1,3 +1,5 @@
+import dbManager from './db/db_manager';
+
 class Storage {
   static DEFAULT_PACKETS_PER_PAGE = 15;
 
@@ -19,11 +21,23 @@ class Storage {
     return project;
   }
 
-  getNumPacketsOfOriginByProject (origin: string): number {
+  async getNumPacketsOfOriginByProject (origin: string): Promise<number> {
     const project = this.getProject();
-    const num = this.get(`numPackets-${origin}-${project}`);
-    if (!num) return Storage.DEFAULT_PACKETS_PER_PAGE;
-    return parseInt(num);
+    const num = await dbManager.pppStore.read(project, origin);
+    if (!num) {
+      await dbManager.pppStore.write(project, origin, Storage.DEFAULT_PACKETS_PER_PAGE);
+      return Storage.DEFAULT_PACKETS_PER_PAGE;
+    }
+    return num;
+  }
+
+  async setNumPacketsOfOriginByProject (origin: string, newVal: number) {
+    const project = this.getProject();
+    await dbManager.pppStore.update(project, origin, newVal);
+  }
+
+  async cleanNumPacketsPerPage () {
+    await dbManager.pppStore.deleteAll();
   }
 }
 

@@ -1,9 +1,10 @@
 import React from 'react';
-import { Box, Text, Th, Tr, Table, Thead, Tbody, SkeletonText, Grid, Link, Button, Select } from '@chakra-ui/react';
+import { Box, Text, Th, Tr, Table, Thead, Tbody, SkeletonText, Grid, Link, Button } from '@chakra-ui/react';
 import { Packet, PacketsApi } from 'libs/apis/packets';
 import OriginTabRow from './origin-tab-row';
 import Pagination from 'pages/common/pagination';
 import storage from 'libs/storage';
+import { usePacketsPerPage } from 'libs/hooks/packets_per_page.hook';
 
 const packetApiInstance = PacketsApi.getInstance();
 
@@ -43,7 +44,7 @@ type Props = {
 function OriginTab (props: Props) {
   const { origin, isFocus } = props;
 
-  const packetsPerPage = storage.getNumPacketsOfOriginByProject(origin);
+  const [packetsPerPage, setPacketsPerPage] = usePacketsPerPage(storage.getProject(), origin);
 
   const [loading, setLoading] = React.useState(true);
   const [page, setPage] = React.useState(1);
@@ -69,6 +70,11 @@ function OriginTab (props: Props) {
     getNumberPacketsByOrigin();
     getPacketsByOrigin();
   }, [origin]);
+  React.useEffect(() => {
+    setNumPages(Math.ceil(numPackets / packetsPerPage));
+    setPage(1);
+    setViewPackets(packets.slice(0, packetsPerPage));
+  }, [packetsPerPage, loading]);
 
   const onClickPagination = (p: number) => {
     setPage(p);
@@ -110,6 +116,12 @@ function OriginTab (props: Props) {
     setViewPackets(sortedPackets.slice(0, packetsPerPage));
   };
 
+  const changeNumPacketsPerPage = async (chooseObj : React.ChangeEvent<HTMLSelectElement>) => {
+    const { value } = chooseObj.target;
+    setPacketsPerPage(parseInt(value));
+    await storage.setNumPacketsOfOriginByProject(origin, parseInt(value));
+  };
+
   return (
     <>
       <Grid
@@ -129,15 +141,20 @@ function OriginTab (props: Props) {
           >
             {origin}
           </Link>
-          <Select
-            placeholder={packetsPerPage.toString() + '1'}
-            width="60px"
-            icon={<></>}
+          <select
+            style={{
+              color: 'black',
+              marginLeft: '10px',
+              fontSize: '14px',
+            }}
+            defaultValue={packetsPerPage}
+            onChange={changeNumPacketsPerPage}
           >
-            <option value="option1">Option 1</option>
-            <option value="option2">Option 2</option>
-            <option value="option3">Option 3</option>
-          </Select>
+            <option value="15">15</option>
+            <option value="40">40</option>
+            <option value="70">70</option>
+            <option value="100">100</option>
+          </select>
         </Box>
 
         <Text as="h1"
