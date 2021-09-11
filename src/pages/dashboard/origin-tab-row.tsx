@@ -10,14 +10,18 @@ type MimeTypeProps = {
 function MimeImage (props: MimeTypeProps) {
   const { packet } = props;
 
-  const parseTypeToFileName = (type: string): string => {
+  const parseTypeToFileName = (packet: Packet): string => {
+    if (packet.path.slice(-5) === '.woff') {
+      return 'font.png';
+    }
+    const type = packet.responseMimeType;
     const lowercase = type.toLocaleLowerCase();
     if (lowercase === 'jpeg' || lowercase === 'png' || lowercase === 'image') return 'image.png';
     if (['css', 'html', 'json', 'text', 'gif', 'script', 'svg'].includes(lowercase)) return lowercase + '.png';
     return 'dat.png';
   };
 
-  const filename = parseTypeToFileName(packet.responseMimeType);
+  const filename = parseTypeToFileName(packet);
   return (
     <Image
       src={`/mime/${filename}`}

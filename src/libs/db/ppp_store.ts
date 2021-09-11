@@ -5,6 +5,7 @@ class PPPStore {
   constructor (db: IDBDatabase, initStore: boolean) {
     this.db = db;
     if (initStore) {
+      console.log('[IndexedDB] Creating object store');
       const store = db.createObjectStore(
         PPPStore.storeName,
         { keyPath: 'key' },
