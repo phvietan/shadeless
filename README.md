@@ -30,4 +30,3 @@ This repo is the frontend, frontend will communicate with API server to show UI 
 - Feature scan with Jaeles
 - Chia bảng dashboard theo path + params + status code
 - Thêm cột dashboard đã fuzzed
-- 
