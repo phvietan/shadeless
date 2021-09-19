@@ -24,3 +24,9 @@ This repo is the frontend, frontend will communicate with API server to show UI 
 - Run this project: `npm start`
 - Install burp extension on https://github.com/phvietan/shadeless-burp
 - Run the API Shadeless
+
+# Todo:
+
+- Feature scan with Jaeles
+- Chia bảng dashboard theo path + params + status code
+- Thêm cột dashboard đã fuzzed
