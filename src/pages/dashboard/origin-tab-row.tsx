@@ -1,16 +1,16 @@
 import React from 'react';
 import { Tr, Td, Button, Tooltip, Text, Image } from '@chakra-ui/react';
-import { Packet } from 'libs/apis/packets';
+import { ParsedPacket } from 'libs/apis/packets';
 import { useLocation } from 'wouter';
 import { DEFAULT_TIME_TRAVEL_PACKETS_RANGE } from 'pages/TimeTravel';
 
 type MimeTypeProps = {
-  packet: Packet;
+  packet: ParsedPacket;
 };
 function MimeImage (props: MimeTypeProps) {
   const { packet } = props;
 
-  const parseTypeToFileName = (packet: Packet): string => {
+  const parseTypeToFileName = (packet: ParsedPacket): string => {
     if (packet.path.slice(-5) === '.woff') {
       return 'font.png';
     }
@@ -33,7 +33,7 @@ function MimeImage (props: MimeTypeProps) {
 }
 
 type Props = {
-  packet: Packet;
+  packet: ParsedPacket;
 };
 
 function OriginTabRow (props: Props) {
@@ -58,6 +58,9 @@ function OriginTabRow (props: Props) {
         </Tooltip>
       </Td>
       <Td width="40%"><Text wordBreak="break-all">{packet.path}</Text></Td>
+      <Td>
+        {packet.responseStatus}
+      </Td>
       <Td textAlign="center">
         <MimeImage packet={packet} />
       </Td>

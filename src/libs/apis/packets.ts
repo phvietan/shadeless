@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
 import { GenericApi, GenericApiResponse } from './types';
 import storage from 'libs/storage';
@@ -8,7 +9,7 @@ export type MetaData = {
   reflectedParameters: Record<string, string>;
 }
 
-export type Packet = {
+export interface Packet {
   requestPacketId: string;
   requestPacketPrefix: string;
   requestPacketIndex: number;
@@ -46,6 +47,21 @@ export type Packet = {
   codeName: string;
 
   created_at?: string;
+}
+
+export enum FuzzStatus {
+  NEW = 'new',
+  RUNNING = 'running',
+  DONE = 'done',
+};
+
+export enum FuzzTool {
+  COMMIX = 'commix',
+  JAELES = 'jaeles',
+};
+export interface ParsedPacket extends Packet {
+  hash: string;
+  fuzzed: Record<FuzzTool, FuzzStatus>;
 }
 
 export const defaultMetaData: MetaData = {
@@ -89,6 +105,15 @@ export const defaultPacket: Packet = {
   rtt: 0,
   reflectedParameters: {},
   codeName: '',
+};
+
+export const defaultParsedPacket: ParsedPacket = {
+  ...defaultPacket,
+  hash: '',
+  fuzzed: {
+    [FuzzTool.COMMIX]: FuzzStatus.NEW,
+    [FuzzTool.JAELES]: FuzzStatus.NEW,
+  },
 };
 
 export class PacketsApi extends GenericApi {
@@ -142,17 +167,6 @@ export class PacketsApi extends GenericApi {
     );
   }
 
-  async getNumberPacketsByOrigin (origin: string) {
-    const endpoint = this.endpoint + storage.getProject() + '/numberPackets';
-    const params = { origin };
-    const url = new URL(endpoint);
-    url.search = new URLSearchParams(params).toString();
-
-    const data = await fetch(url.toString());
-    const response = await data.json();
-    return response as Omit<GenericApiResponse, 'data'> & { data: number };
-  }
-
   async getPacketsByOrigin (origin: string, skip: number, limit: number) {
     const endpoint = this.endpoint + storage.getProject() + '/packets';
     const params = { origin, skip: skip.toString(), limit: limit.toString() };
@@ -161,6 +175,6 @@ export class PacketsApi extends GenericApi {
 
     const data = await fetch(url.toString());
     const response = await data.json();
-    return response as Omit<GenericApiResponse, 'data'> & { data: Packet[] };
+    return response as Omit<GenericApiResponse, 'data'> & { data: ParsedPacket[] };
   }
 }

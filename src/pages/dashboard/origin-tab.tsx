@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Text, Th, Tr, Table, Thead, Tbody, SkeletonText, Grid, Link, Button } from '@chakra-ui/react';
-import { Packet, PacketsApi } from 'libs/apis/packets';
+import { PacketsApi, ParsedPacket } from 'libs/apis/packets';
 import OriginTabRow from './origin-tab-row';
 import Pagination from 'pages/common/pagination';
 import storage from 'libs/storage';
@@ -24,7 +24,7 @@ function TableSortButton (props: TableSortButtonProps) {
   );
 }
 
-const compareReflected = (a: Packet, b: Packet): number => {
+const compareReflected = (a: ParsedPacket, b: ParsedPacket): number => {
   const refA = Object.keys(a.reflectedParameters).length;
   const refB = Object.keys(b.reflectedParameters).length;
   if (refA < refB) return 1;
@@ -48,30 +48,23 @@ function OriginTab (props: Props) {
 
   const [loading, setLoading] = React.useState(true);
   const [page, setPage] = React.useState(1);
-  const [numPackets, setNumPackets] = React.useState(0);
   const [numPages, setNumPages] = React.useState(1);
-  const [packets, setPackets] = React.useState<Packet[]>([]);
-  const [viewPackets, setViewPackets] = React.useState<Packet[]>([]);
+  const [packets, setPackets] = React.useState<ParsedPacket[]>([]);
+  const [viewPackets, setViewPackets] = React.useState<ParsedPacket[]>([]);
 
   const getPacketsByOrigin = async (skip = 0, limit = 99999999) => { // TODO: If page too lag, switch to DEFAULT_PACKETS_PER_PAGE
     const { data } = await packetApiInstance.getPacketsByOrigin(origin, skip, limit);
     data.sort((a, b) => compareReflected(a, b));
     setPackets(data);
+    setNumPages(Math.ceil(data.length / packetsPerPage));
     setViewPackets(data.slice(0, packetsPerPage));
     setLoading(false);
   };
-  const getNumberPacketsByOrigin = async () => {
-    const resp = await packetApiInstance.getNumberPacketsByOrigin(origin);
-    const n = resp.data;
-    setNumPackets(n);
-    setNumPages(Math.ceil(n / packetsPerPage));
-  };
   React.useEffect(() => {
-    getNumberPacketsByOrigin();
     getPacketsByOrigin();
   }, [origin]);
   React.useEffect(() => {
-    setNumPages(Math.ceil(numPackets / packetsPerPage));
+    setNumPages(Math.ceil(packets.length / packetsPerPage));
     setPage(1);
     setViewPackets(packets.slice(0, packetsPerPage));
   }, [packetsPerPage, loading]);
@@ -82,7 +75,7 @@ function OriginTab (props: Props) {
   };
 
   const onClickSort = (key: string) => {
-    const isSorted = (arr: Packet[], key: string): boolean => {
+    const isSorted = (arr: ParsedPacket[], key: string): boolean => {
       for (let i = 0; i < arr.length - 1; i += 1) {
         const cur: any = arr[i];
         const nxt: any = arr[i + 1];
@@ -102,7 +95,7 @@ function OriginTab (props: Props) {
     setViewPackets(sortedPackets.slice(0, packetsPerPage));
   };
   const onClickSortParam = () => {
-    const isSorted = (arr: Packet[]): boolean => {
+    const isSorted = (arr: ParsedPacket[]): boolean => {
       for (let i = 0; i < arr.length - 1; i += 1) {
         if (compareReflected(arr[i], arr[i + 1]) === 1) return false;
       }
@@ -147,7 +140,7 @@ function OriginTab (props: Props) {
               marginLeft: '10px',
               fontSize: '14px',
             }}
-            defaultValue={packetsPerPage}
+            value={packetsPerPage}
             onChange={changeNumPacketsPerPage}
           >
             <option value="15">15</option>
@@ -160,7 +153,7 @@ function OriginTab (props: Props) {
         <Text as="h1"
           justifySelf="end"
         >
-          {numPackets} endpoints
+          {packets.length} endpoints
         </Text>
       </Grid>
 
@@ -185,6 +178,7 @@ function OriginTab (props: Props) {
                 <Tr>
                   <Th>Action</Th>
                   <Th><TableSortButton onClick={() => onClickSort('path')}>Path</TableSortButton></Th>
+                  <Th><TableSortButton onClick={() => onClickSort('responseStatus')}>Status</TableSortButton></Th>
                   <Th textAlign="center"><TableSortButton onClick={() => onClickSort('responseMimeType')}>Mime</TableSortButton></Th>
                   <Th><TableSortButton onClick={onClickSortParam}>Parameters</TableSortButton></Th>
                 </Tr>
@@ -192,7 +186,7 @@ function OriginTab (props: Props) {
               <Tbody>
                 {viewPackets.map((packet, index) =>
                   <OriginTabRow
-                    key={`${packet.origin}/${packet.path}`}
+                    key={`${packet.origin}/${packet.hash}`}
                     packet={packet}
                   />
                 )}
