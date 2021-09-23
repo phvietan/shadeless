@@ -2,6 +2,7 @@
 /* eslint-disable camelcase */
 import { GenericApi, GenericApiResponse } from './types';
 import storage from 'libs/storage';
+import { Note } from './notes';
 
 export type MetaData = {
   origins: string[];
@@ -10,6 +11,7 @@ export type MetaData = {
 }
 
 export interface Packet {
+  id?: string;
   requestPacketId: string;
   requestPacketPrefix: string;
   requestPacketIndex: number;
@@ -145,7 +147,10 @@ export class PacketsApi extends GenericApi {
     url.search = new URLSearchParams(params).toString();
     const data = await fetch(url.toString());
     const response = await data.json();
-    return response as Omit<GenericApiResponse, 'data'> & { data: Packet[] };
+    return response as Omit<GenericApiResponse, 'data'> & { data: {
+      notes: Note[],
+      packets: ParsedPacket[],
+    } };
   }
 
   // Get TimeTravel Packets in: [-range; +range]
@@ -153,18 +158,22 @@ export class PacketsApi extends GenericApi {
     const arr = requestPacketId.split('.');
     const [prefix, idx] = arr;
     if (arr.length !== 2) {
-      const response: Omit<GenericApiResponse, 'data'> & { data: Packet[] } = {
+      const response: Omit<GenericApiResponse, 'data'> & { data: {
+        notes: Note[],
+        packets: ParsedPacket[],
+      } } = {
         statusCode: 400,
         error: 'Wrong requestPacketId format',
-        data: [],
+        data: { notes: [], packets: [] },
       };
       return response;
     }
-    return this.getTimeTravelPacketsByPrefixAndRange(
+    const t = await this.getTimeTravelPacketsByPrefixAndRange(
       prefix,
       Math.max(1, parseInt(idx) - range),
       range * 2 + 1,
     );
+    return t;
   }
 
   async getPacketsByOrigin (origin: string, skip: number, limit: number) {

@@ -35,7 +35,7 @@ function Navbar () {
             <Link href="/">Shadeless</Link>
           </Text>
 
-        <Link href="/domains">Domains</Link>
+        <Link href="/notes">Notes</Link>
       </HStack>
       <Menu>
         <MenuButton as={Button}
@@ -54,19 +54,19 @@ function Navbar () {
             mr="25px"
             fontWeight="100"
           >
-            Choosing project: {choosingProject}
+            Choosing project: <strong>&nbsp;{choosingProject}</strong>
           </Text>
           <HamburgerIcon />
         </MenuButton>
         <MenuList color="background.primary-black">
           <Link href={'/projects/' + choosingProject}>
             <MenuItem>
-              Config
+              Config <strong>&nbsp;{choosingProject}</strong>
             </MenuItem>
           </Link>
-          <Link href={'/projects'}>
+          <Link href={'/setting'}>
             <MenuItem>
-                Choose project
+              Choose project
             </MenuItem>
           </Link>
         </MenuList>

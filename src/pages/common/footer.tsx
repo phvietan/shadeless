@@ -9,7 +9,7 @@ function Footer () {
       color="white"
       p="10px"
       boxShadow="md"
-  >
+    >
       @ 2021 Shadeless reconnaissance application
     </Box>
   );

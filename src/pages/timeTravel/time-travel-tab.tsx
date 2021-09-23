@@ -1,14 +1,15 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
-import { Packet } from 'libs/apis/packets';
+import { Packet, ParsedPacket } from 'libs/apis/packets';
 import { Box, Button, Grid, Link, Text } from '@chakra-ui/react';
 import { FilesApi } from 'libs/apis/files';
 import TimeTravelBody from './time-travel-body';
 import { GenericApi } from 'libs/apis/types';
 import storage from 'libs/storage';
-import TimeTravelButton from './time-travel-button';
 import { dateToString } from 'libs/timing';
 import { notify, ToastType } from 'libs/notify';
+import { Note } from 'libs/apis/notes';
+import TimeTravelActionRow from './time-travel-action-row';
 
 const filesApiInstance = FilesApi.getInstance();
 
@@ -20,11 +21,13 @@ export enum TimeTravelBodyType {
 };
 
 type Props = {
-  packet: Packet;
+  packet: ParsedPacket;
+  note?: Note;
   toast: ToastType;
+  clickNote: (packet: ParsedPacket, note?: Note) => void;
 };
 function TimeTravelTab (props: Props) {
-  const { packet, toast } = props;
+  const { packet, toast, note, clickNote } = props;
   const [isLoading, setIsLoading] = React.useState(true);
   const [errRequest, setErrRequest] = React.useState<string>('');
   const [errResponse, setErrResponse] = React.useState<string>('');
@@ -44,16 +47,10 @@ function TimeTravelTab (props: Props) {
     getBodies();
   }, [packet]);
 
-  const copy = async () => {
-    const url = packet.origin + packet.requestHeaders[0].split(' ')[1];
-    await navigator.clipboard.writeText(url);
-    notify(toast, { statusCode: 200, data: 'Copied url to clipboard', error: '' });
-  };
-
   return (
     <Box
       bg="background.primary-white"
-      fontSize="sm"
+      fontSize="xs"
       wordBreak="break-all"
       mt="4vh"
       color="background.primary-black"
@@ -97,28 +94,15 @@ function TimeTravelTab (props: Props) {
           content={packet.responseHeaders.join('\n')}
         />
       </Grid>
-      <Grid gridTemplateColumns="1fr 1fr">
-        <Box p="10px" border="1px solid LightGray">
-          <TimeTravelButton>{packet.codeName}</TimeTravelButton>
-          <TimeTravelButton onClick={copy}>
-            Copy URL
-          </TimeTravelButton>
-          <TimeTravelButton>
-            Reflected parameters: {Object.keys(packet.reflectedParameters).length}
-          </TimeTravelButton>
-        </Box>
-        <Box p="10px" border="1px solid LightGray">
-          <Link
-            href={`${GenericApi.backendUrl}/files/${storage.getProject()}/${packet.responseBodyHash}`}
-            rel="nofollow noopener"
-            target="_blank"
-          >
-            <TimeTravelButton>
-              Download
-            </TimeTravelButton>
-          </Link>
-        </Box>
-      </Grid>
+
+      <TimeTravelActionRow
+        note={note}
+        toast={toast}
+        packet={packet}
+        body={requestBody}
+        clickNote={clickNote}
+      />
+
       <Grid gridTemplateColumns="1fr 1fr">
         <TimeTravelBody
           error={errRequest}

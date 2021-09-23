@@ -4,7 +4,7 @@ import { PacketsApi } from 'libs/apis/packets';
 import { unmountComponentAtNode } from 'react-dom';
 import { render } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
-import ProjectsPage from './Projects';
+import SettingPage from './Setting';
 
 var container: any = null;
 beforeEach(() => {
@@ -38,7 +38,7 @@ beforeAll(() => {
 describe('Test', () => {
   test('render app', () => {
     act(() => {
-      render(<ProjectsPage />, container);
+      render(<SettingPage />, container);
     });
   });
 });

@@ -21,6 +21,12 @@ class Storage {
     return project;
   }
 
+  getCodeName (): string {
+    const codeName = this.get('codeName');
+    if (!codeName) return '';
+    return codeName;
+  }
+
   async getNumPacketsOfOriginByProject (origin: string): Promise<number> {
     const project = this.getProject();
     const num = await dbManager.pppStore.read(project, origin);

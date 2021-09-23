@@ -9,6 +9,19 @@ type Props = {
 
 function ShowParameters (props: Props) {
   const { parameters, reflectedParameters, isLoading } = props;
+  const [showParams, setShowParams] = React.useState<string[]>([]);
+  React.useEffect(() => {
+    const params = parameters;
+    params.sort((a, b) => {
+      const checkA = a in reflectedParameters;
+      const checkB = b in reflectedParameters;
+      if (checkA !== checkB) return checkA === true ? -1 : 1;
+      if (a > b) return 1;
+      if (a < b) return -1;
+      return 0;
+    });
+    setShowParams(params);
+  }, [isLoading]);
   return (
     <Box>
       <Text as="h1"
@@ -31,7 +44,7 @@ function ShowParameters (props: Props) {
         {isLoading &&
           <SkeletonText mt="30px" p="20px" noOfLines={7} spacing="4" />
         }
-        {parameters.map(param =>
+        {showParams.map(param =>
           <Button
             key={`parameter-${param}`}
             size="xs"

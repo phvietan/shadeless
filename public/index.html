@@ -23,6 +23,17 @@
       if (!window.indexedDB) {
         alert("Your browser doesn't support a stable version of IndexedDB. Please use new browser to use this service");
       }
+      window.copyToClipboard = (str) => {
+        const el = document.createElement('textarea');
+        el.value = str;
+        el.setAttribute('readonly', '');
+        el.style.position = 'absolute';
+        el.style.left = '-9999px';
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+      };
     </script>
     <div id="root"></div>
   </body>
