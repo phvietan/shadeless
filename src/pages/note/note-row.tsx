@@ -3,6 +3,9 @@ import { Note } from 'libs/apis/notes';
 import { dateToString } from 'libs/timing';
 import { Td, Tr } from '@chakra-ui/table';
 import { Button } from '@chakra-ui/button';
+import { Packet } from 'libs/apis/packets';
+import { DEFAULT_TIME_TRAVEL_PACKETS_RANGE } from 'pages/TimeTravel';
+import { Link } from '@chakra-ui/layout';
 
 type TagProps = {
   id: string;
@@ -39,7 +42,9 @@ function Tags (props: TagProps) {
         <Button
           key={`tag-${id}-${tag}-${index}`}
           colorScheme={fromTagToColor(tag)}
-          size="sm"
+          size="xs"
+          mx="3px"
+          my="3px"
         >
           {tag}
         </Button>
@@ -50,27 +55,51 @@ function Tags (props: TagProps) {
 
 type Props = {
   note: Note;
+  packet: Packet;
+  onClickEditBtn: (note: Note, packet: Packet) => void;
+  onClickDeleteBtn: (note: Note, packet: Packet) => void;
 };
 function NoteRow (props: Props) {
-  const { note } = props;
+  const { note, packet, onClickEditBtn, onClickDeleteBtn } = props;
+
   return (
-    <Tr
-      height="100px"
-    >
+    <Tr>
       <Td>
         <Tags id={note.id || ''} tags={note.tags} />
       </Td>
       <Td textAlign="center">{note.codeName}</Td>
-      <Td textAlign="center">
-        {note.requestPacketId}
+      <Td
+        textAlign="center"
+        fontSize="xs"
+      >
+        <Link
+          color="blue"
+          href={`/timeTravel?range=${DEFAULT_TIME_TRAVEL_PACKETS_RANGE}&requestPacketId=${packet.requestPacketId}`}
+        >
+          {packet.origin + packet.requestHeaders[0].split(' ')[1]}
+        </Link>
       </Td>
-      <Td whiteSpace='pre-wrap'>{note.description}</Td>
+      <Td
+        whiteSpace='pre-wrap'
+        py="10px"
+      >
+        {note.description}
+      </Td>
       <Td>{dateToString(note.updated_at || new Date(), false)}</Td>
       <Td>
-        <Button size="sm" colorScheme="orange" mx="10px">
+        <Button
+          size="sm"
+          colorScheme="orange"
+          mx="10px"
+          onClick={() => onClickEditBtn(note, packet)}
+        >
           Edit
         </Button>
-        <Button size="sm" colorScheme="red">
+        <Button
+          size="sm"
+          colorScheme="red"
+          onClick={() => onClickDeleteBtn(note, packet)}
+        >
           Delete
         </Button>
       </Td>

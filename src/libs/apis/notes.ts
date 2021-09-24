@@ -1,10 +1,6 @@
 import { GenericApi, GenericApiResponse, StringApiResponse } from './types';
 import storage from 'libs/storage';
-
-export type Reply = {
-  userId: string,
-  description: string,
-}
+import { Packet } from './packets';
 
 export interface Note {
   id?: string,
@@ -12,17 +8,19 @@ export interface Note {
   tags: string,
   description: string,
   requestPacketId: string,
-  replies: Reply[],
   updated_at?: Date,
   created_at?: Date,
 }
+
+export type ModalNote = Note & {
+  path: string;
+};
 
 export const defaultNote: Note = {
   codeName: '',
   tags: '',
   description: '',
   requestPacketId: '',
-  replies: [],
 };
 
 export class NotesApi extends GenericApi {
@@ -43,7 +41,10 @@ export class NotesApi extends GenericApi {
     const endpoint = `${this.endpoint}${storage.getProject()}/notes`;
     const resp = await fetch(endpoint);
     const allNotes = await resp.json();
-    return allNotes as Omit<GenericApiResponse, 'data'> & { data: Note[] };
+    return allNotes as Omit<GenericApiResponse, 'data'> & { data: {
+      notes: Note[],
+      packets: Packet[],
+    } };
   }
 
   async createNote (newNote: Note) {
@@ -52,6 +53,21 @@ export class NotesApi extends GenericApi {
       ...GenericApi.postOptions,
       body: JSON.stringify(newNote),
     });
+    return resp.json() as Promise<StringApiResponse>;
+  }
+
+  async editNote (id: string, newNote: Note) {
+    const endpoint = `${this.endpoint}${storage.getProject()}/notes/${id}`;
+    const resp = await fetch(endpoint, {
+      ...GenericApi.putOptions,
+      body: JSON.stringify(newNote),
+    });
+    return resp.json() as Promise<StringApiResponse>;
+  }
+
+  async deleteNote (id: string) {
+    const endpoint = `${this.endpoint}${storage.getProject()}/notes/${id}`;
+    const resp = await fetch(endpoint, GenericApi.deleteOptions);
     return resp.json() as Promise<StringApiResponse>;
   }
 }

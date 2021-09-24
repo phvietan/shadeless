@@ -1,8 +1,22 @@
 import React from 'react';
-import { Box, SkeletonText, Table, Thead, Tr, Th, Button, Tbody } from '@chakra-ui/react';
+import {
+  Box,
+  SkeletonText,
+  Table,
+  Thead,
+  Tr,
+  Th,
+  Button,
+  Tbody,
+  useDisclosure,
+} from '@chakra-ui/react';
 import Navbar from './common/navbar';
-import { Note, NotesApi } from 'libs/apis/notes';
+import { defaultNote, Note, NotesApi, ModalNote } from 'libs/apis/notes';
 import NoteRow from './note/note-row';
+import { Packet } from 'libs/apis/packets';
+import { User, UsersApi } from 'libs/apis/users';
+import NoteEditModal from './note/note-edit-modal';
+import NoteDeleteModal from './note/note-delete-modal';
 
 const noteApiInstance = NotesApi.getInstance();
 
@@ -22,17 +36,33 @@ function TableSortButton (props: TableSortButtonProps) {
   );
 }
 
+const userApiInstance = UsersApi.getInstance();
+
 function NotesPage (): JSX.Element {
   const [isLoading, setIsLoading] = React.useState(true);
+  const { isOpen: isOpenEdit, onOpen: onOpenEdit, onClose: onCloseEdit } = useDisclosure();
+  const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure();
+
+  const [users, setUsers] = React.useState<User[]>([]);
   const [notes, setNotes] = React.useState<Note[]>([]);
+  const [packets, setPackets] = React.useState<Packet[]>([]);
+  const [modalNote, setModalNote] = React.useState<ModalNote>({ ...defaultNote, path: '' });
+
+  const loadAllNotes = async () => {
+    const { data } = await noteApiInstance.getNotesInCurrentProject();
+    const { notes, packets } = data;
+    setNotes(notes);
+    setPackets(packets);
+    setIsLoading(false);
+  };
 
   React.useEffect(() => {
-    const loadAllNotes = async () => {
-      const { data } = await noteApiInstance.getNotesInCurrentProject();
-      setNotes(data);
-      setIsLoading(false);
+    const getUsers = async () => {
+      const { data: curUsers } = await userApiInstance.getUsersInCurrentProject();
+      setUsers(curUsers);
     };
     loadAllNotes();
+    getUsers();
   }, []);
 
   const onClickSort = async (key: string) => {
@@ -45,13 +75,29 @@ function NotesPage (): JSX.Element {
       return true;
     };
     const isReverse = isSorted(notes, key) ? -1 : 1;
-    const sortedNotes = notes;
+    const sortedNotes = [...notes];
     sortedNotes.sort((a: any, b: any) => {
       if (a[key] > b[key]) return 1 * isReverse;
       if (a[key] < b[key]) return -1 * isReverse;
       return 0;
     });
     setNotes(sortedNotes);
+  };
+
+  const onClickEditBtn = (note: Note, packet: Packet) => {
+    onOpenEdit();
+    setModalNote({
+      ...note,
+      path: packet.origin + packet.requestHeaders[0].split(' ')[1],
+    });
+  };
+
+  const onClickDeleteBtn = (note: Note, packet: Packet) => {
+    onOpenDelete();
+    setModalNote({
+      ...note,
+      path: packet.origin + packet.requestHeaders[0].split(' ')[1],
+    });
   };
 
   return (
@@ -74,7 +120,7 @@ function NotesPage (): JSX.Element {
           fontSize="xl"
           fontWeight="bold"
         >
-          Notes
+          📑 Notes
         </Box>
         {isLoading
           ? <SkeletonText mt="30px" p="20px" noOfLines={7} spacing="4" />
@@ -87,28 +133,47 @@ function NotesPage (): JSX.Element {
               <Thead>
                 <Tr>
                   <Th width="10%"><TableSortButton onClick={() => onClickSort('tags')}>Tags</TableSortButton></Th>
-                  <Th textAlign="center">
+                  <Th width="20px" textAlign="center">
                     <TableSortButton onClick={() => onClickSort('codeName')}>
-                      Code name
+                      Name
                     </TableSortButton>
                   </Th>
-                  <Th>At</Th>
-                  <Th width="50%">Description</Th>
+                  <Th textAlign="center" width="15%">At</Th>
+                  <Th width="40%">Description</Th>
                   <Th><TableSortButton onClick={() => onClickSort('updated_at')}>Updated at</TableSortButton></Th>
                   <Th textAlign="center">Action</Th>
                 </Tr>
               </Thead>
               <Tbody>
-                {notes.map(note =>
+                {notes.map((note, idx) =>
                   <NoteRow
-                    key={`note-${note.id}`}
+                    key={`note-${note.id}-${idx}`}
                     note={note}
+                    packet={packets[idx]}
+                    onClickEditBtn={onClickEditBtn}
+                    onClickDeleteBtn={onClickDeleteBtn}
                   />
                 )}
               </Tbody>
             </Table>
         }
       </Box>
+
+      <NoteEditModal
+        users={users}
+        isOpen={isOpenEdit}
+        onClose={onCloseEdit}
+        note={modalNote}
+        loadNotes={loadAllNotes}
+        setNote={setModalNote}
+      />
+
+      <NoteDeleteModal
+        isOpen={isOpenDelete}
+        onClose={onCloseDelete}
+        note={modalNote}
+        loadNotes={loadAllNotes}
+      />
     </Box>
   );
 }

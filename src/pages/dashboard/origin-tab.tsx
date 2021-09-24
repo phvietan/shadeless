@@ -84,7 +84,7 @@ function OriginTab (props: Props) {
       return true;
     };
     const isReverse = isSorted(packets, key) ? -1 : 1;
-    const sortedPackets = packets;
+    const sortedPackets = [...packets];
     sortedPackets.sort((a: any, b: any) => {
       if (a[key] > b[key]) return 1 * isReverse;
       if (a[key] < b[key]) return -1 * isReverse;

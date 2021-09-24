@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react';
 import { Packet, PacketsApi, ParsedPacket } from 'libs/apis/packets';
 import TimeTravelTab from 'pages/timeTravel/time-travel-tab';
-import { defaultNote, Note, NotesApi } from 'libs/apis/notes';
+import { defaultNote, Note, NotesApi, ModalNote } from 'libs/apis/notes';
 import { User, UsersApi } from 'libs/apis/users';
 import SelectUser from './common/select-user';
 import { notify } from 'libs/notify';
@@ -28,10 +28,6 @@ export const DEFAULT_TIME_TRAVEL_PACKETS_RANGE = 5;
 const packetApiInstance = PacketsApi.getInstance();
 const userApiInstance = UsersApi.getInstance();
 const noteApiInstance = NotesApi.getInstance();
-
-type ModalNote = Note & {
-  path: string;
-};
 
 function TimeTravelPage () {
   const toast = useToast();
