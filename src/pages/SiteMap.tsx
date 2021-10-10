@@ -2,30 +2,33 @@ import React from 'react';
 import { Box, SkeletonText, useToast } from '@chakra-ui/react';
 import Navbar from './common/navbar';
 import SiteMapTab from './sitemap/sitemap-tab';
-import { PacketsApi } from 'libs/apis/packets';
 import { notify } from 'libs/notify';
 import { useLocation } from 'wouter';
 import storage from 'libs/storage';
+import { SiteMapMetadata, sitemapMetadataDefault } from './sitemap/sitemap-object';
+import { ParsedPathApi } from 'libs/apis/parsed_paths';
+import SiteMapHeader from './sitemap/sitemap-header';
 
-const packetApiInstance = PacketsApi.getInstance();
+const parsedPathApiInstance = ParsedPathApi.getInstance();
 
 function SiteMap () {
   const toast = useToast();
   const setLocation = useLocation()[1];
   const [isLoading, setIsLoading] = React.useState(true);
-  const [origins, setOrigins] = React.useState<string[]>([]);
+  const [metadata, setMetadata] = React.useState<SiteMapMetadata>(sitemapMetadataDefault);
 
   const getMetaData = async () => {
-    const resp = await packetApiInstance.getMetaData();
+    const resp = await parsedPathApiInstance.getMetaData();
     if (resp.statusCode === 404) {
       setLocation('/projects');
       notify(toast, { statusCode: 404, data: '', error: `Not found project ${storage.getProject()} in database` });
       return;
     }
     const result = resp.data;
-
     // Blacklist wappalyzer because it flood our page
-    setOrigins(result.origins.filter(o => o !== 'https://ad.wappalyzer.com' && o !== ''));
+    result.origins = result.origins.filter(o => o !== 'https://ad.wappalyzer.com' && o !== '');
+
+    setMetadata(result);
     setIsLoading(false);
   };
   React.useEffect(() => {
@@ -50,12 +53,17 @@ function SiteMap () {
           />
         </Box>
       }
+      <SiteMapHeader
+        isLoading={isLoading}
+        metadata={metadata}
+      />
+
       <Box
         mt="5vh"
-        mx="4%"
+        mx="2%"
         bg="background.primary-white"
       >
-        {origins.map(origin =>
+        {metadata.origins.map(origin =>
           <SiteMapTab
             key={`sitemaptab-${origin}`}
             origin={origin}

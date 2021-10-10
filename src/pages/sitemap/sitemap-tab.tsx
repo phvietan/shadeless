@@ -1,10 +1,9 @@
 import React from 'react';
 import { ParsedPath, ParsedPathApi } from 'libs/apis/parsed_paths';
 import SiteMapTabHeader from './sitemap-tab-header';
-import { fromParsedPathsToSiteMapObject, SiteMapObject, siteMapObjectDefault } from './sitemap-object';
-import { SkeletonText } from '@chakra-ui/skeleton';
-import SiteMapTree from './sitemap-tree';
-import { Box } from '@chakra-ui/layout';
+import { Box, Table, Thead, Tr, Th, SkeletonText, Tbody } from '@chakra-ui/react';
+import TableSortButton from 'pages/common/table-sort-button';
+import SiteMapTabRow from './sitemap-tab-row';
 
 const parsedPathsApiInstance = ParsedPathApi.getInstance();
 
@@ -14,7 +13,6 @@ type Props = {
 function SiteMapTab (props: Props) {
   const { origin } = props;
   const [isLoading, setIsLoading] = React.useState(true);
-  const [structure, setStructure] = React.useState<SiteMapObject>(siteMapObjectDefault);
   const [parsedPaths, setParsedPaths] = React.useState<ParsedPath[]>([]);
 
   React.useEffect(() => {
@@ -27,29 +25,46 @@ function SiteMapTab (props: Props) {
     getParsedPaths();
   }, []);
 
-  React.useEffect(() => {
-    const s = fromParsedPathsToSiteMapObject(parsedPaths);
-    setStructure(s);
-  }, [parsedPaths]);
-
   return (
-    <Box
-      my="50px"
-    >
+    <Box my="50px">
       <SiteMapTabHeader
         id={`sitemap-${origin}`}
         origin={origin}
         numPaths={parsedPaths.length}
       />
 
-      {isLoading && <SkeletonText mt="30px" p="20px" noOfLines={7} spacing="4" />}
-      <Box
-        p="10px"
-      >
-        <SiteMapTree
-          tree={structure}
-        />
-      </Box>
+      {isLoading
+        ? <SkeletonText mt="30px" p="20px" noOfLines={7} spacing="4" />
+        : <Table
+            size="sm"
+            fontSize="xs"
+            variant="striped"
+            colorScheme="blackAlpha"
+          >
+            <Thead>
+              <Tr>
+                <Th>Action</Th>
+                <Th>
+                  <TableSortButton
+                    kkey="path"
+                    array={parsedPaths}
+                    setArray={setParsedPaths}
+                  >
+                    Path
+                  </TableSortButton>
+                </Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {parsedPaths.map(parsedPath =>
+                <SiteMapTabRow
+                  key={`${origin}/${parsedPath._id}`}
+                  parsedPath={parsedPath}
+                />
+              )}
+            </Tbody>
+          </Table>
+        }
 
     </Box>
   );

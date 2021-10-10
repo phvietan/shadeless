@@ -2,6 +2,7 @@
 /* eslint-disable camelcase */
 import { GenericApi, GenericApiResponse } from './types';
 import storage from 'libs/storage';
+import { SiteMapMetadata } from 'pages/sitemap/sitemap-object';
 
 export enum PathStatus {
   TODO = 'todo',
@@ -49,6 +50,13 @@ export class ParsedPathApi extends GenericApi {
       this.instance = new ParsedPathApi();
     }
     return this.instance;
+  }
+
+  async getMetaData () {
+    const endpoint = this.endpoint + storage.getProject() + '/paths/metadata';
+    const data = await fetch(endpoint);
+    const response = await data.json();
+    return response as Omit<GenericApiResponse, 'data'> & { data: SiteMapMetadata };
   }
 
   async getCurrentProjectParsedPathByOrigin (origin: string) {

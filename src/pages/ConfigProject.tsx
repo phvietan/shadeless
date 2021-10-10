@@ -70,7 +70,7 @@ function ConfigProjectPage (props: Props) {
     (async function () {
       const resp = await projectApiInstance.getOne(projectName);
       if (resp.statusCode === 404) {
-        setLocation('/projects');
+        setLocation('/setting');
       }
       setProject(resp.data);
     })();

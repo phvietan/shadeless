@@ -75,7 +75,7 @@ function OriginTabRow (props: Props) {
         </MethodWithColor>
       </Td>
       <Td width="40%"><Text wordBreak="break-all">{packet.path}</Text></Td>
-      <Td>
+      <Td textAlign="center">
         {packet.responseStatus}
       </Td>
       <Td textAlign="center">

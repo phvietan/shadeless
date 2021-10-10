@@ -37,48 +37,26 @@ function OriginTab (props: Props) {
   const [viewPackets, setViewPackets] = React.useState<ParsedPacket[]>([]);
   const [packetsPerPage, setPacketsPerPage] = usePacketsPerPage(storage.getProject(), origin);
 
-  const getPacketsByOrigin = async (skip = 0, limit = 99999999) => { // TODO: If page too lag, switch to DEFAULT_PACKETS_PER_PAGE
-    const { data } = await packetApiInstance.getPacketsByOrigin(origin, skip, limit);
-    data.sort((a, b) => compareReflected(a, b));
-    setPackets(data);
-    setNumPages(Math.ceil(data.length / packetsPerPage));
-    setViewPackets(data.slice(0, packetsPerPage));
-    setLoading(false);
-  };
   React.useEffect(() => {
+    const getPacketsByOrigin = async (skip = 0, limit = 99999999) => { // TODO: If page too lag, switch to DEFAULT_PACKETS_PER_PAGE
+      const { data } = await packetApiInstance.getPacketsByOrigin(origin, skip, limit);
+      data.sort((a, b) => compareReflected(a, b));
+      setPackets(data);
+      setNumPages(Math.ceil(data.length / packetsPerPage));
+      setLoading(false);
+    };
     getPacketsByOrigin();
   }, [origin]);
+
   React.useEffect(() => {
     setNumPages(Math.ceil(packets.length / packetsPerPage));
     setPage(1);
-    setViewPackets(packets.slice(0, packetsPerPage));
   }, [packetsPerPage, loading]);
 
-  const onClickPagination = (p: number) => {
-    setPage(p);
-    setViewPackets(packets.slice((p - 1) * packetsPerPage, p * packetsPerPage));
-  };
+  React.useEffect(() => {
+    setViewPackets(packets.slice((page - 1) * packetsPerPage, page * packetsPerPage));
+  }, [page, packets, packetsPerPage]);
 
-  const onClickSort = (key: string) => {
-    const isSorted = (arr: ParsedPacket[], key: string): boolean => {
-      for (let i = 0; i < arr.length - 1; i += 1) {
-        const cur: any = arr[i];
-        const nxt: any = arr[i + 1];
-        if (cur[key] > nxt[key]) return false;
-      }
-      return true;
-    };
-    const isReverse = isSorted(packets, key) ? -1 : 1;
-    const sortedPackets = packets.slice();
-    sortedPackets.sort((a: any, b: any) => {
-      if (a[key] > b[key]) return 1 * isReverse;
-      if (a[key] < b[key]) return -1 * isReverse;
-      return 0;
-    });
-    setPage(1);
-    setPackets(sortedPackets);
-    setViewPackets(sortedPackets.slice(0, packetsPerPage));
-  };
   const onClickSortParam = () => {
     const isSorted = (arr: ParsedPacket[]): boolean => {
       for (let i = 0; i < arr.length - 1; i += 1) {
@@ -123,15 +101,45 @@ function OriginTab (props: Props) {
               <Thead>
                 <Tr>
                   <Th>Action</Th>
-                  <Th><TableSortButton onClick={() => onClickSort('method')}>Method</TableSortButton></Th>
-                  <Th><TableSortButton onClick={() => onClickSort('path')}>Path</TableSortButton></Th>
-                  <Th><TableSortButton onClick={() => onClickSort('responseStatus')}>Status</TableSortButton></Th>
+                  <Th>
+                    <TableSortButton
+                      kkey="method"
+                      array={packets}
+                      setArray={setPackets}
+                    >
+                      Method
+                    </TableSortButton>
+                  </Th>
+                  <Th>
+                    <TableSortButton
+                      kkey="path"
+                      array={packets}
+                      setArray={setPackets}
+                    >
+                      Path
+                    </TableSortButton>
+                  </Th>
+                  <Th>
+                    <TableSortButton
+                      kkey="responseStatus"
+                      array={packets}
+                      setArray={setPackets}
+                    >
+                      Status
+                    </TableSortButton>
+                  </Th>
                   <Th textAlign="center">
-                    <TableSortButton onClick={() => onClickSort('responseMimeType')}>
+                    <TableSortButton
+                      kkey="responseMimeType"
+                      array={packets}
+                      setArray={setPackets}
+                    >
                       Mime
                     </TableSortButton>
                   </Th>
-                  <Th><TableSortButton onClick={onClickSortParam}>Parameters</TableSortButton></Th>
+                  <Th>
+                    <TableSortButton onClick={onClickSortParam}>Parameters</TableSortButton>
+                  </Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -152,7 +160,9 @@ function OriginTab (props: Props) {
             hrefHash={origin}
             id={origin}
             page={page}
-            setPage={onClickPagination}
+            setPage={(p: number) => {
+              setPage(p);
+            }}
             maxPage={numPages}
           />
         </Box>

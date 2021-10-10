@@ -21,7 +21,7 @@ function AppPage () {
   const getMetaData = async () => {
     const resp = await packetApiInstance.getMetaData();
     if (resp.statusCode === 404) {
-      setLocation('/projects');
+      setLocation('/setting');
       notify(toast, { statusCode: 404, data: '', error: `Not found project ${storage.getProject()} in database` });
       return;
     }

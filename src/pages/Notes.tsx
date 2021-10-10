@@ -39,25 +39,6 @@ function NotesPage (): JSX.Element {
     getUsers();
   }, []);
 
-  const onClickSort = async (key: string) => {
-    const isSorted = (arr: Note[], key: string): boolean => {
-      for (let i = 0; i < arr.length - 1; i += 1) {
-        const cur: any = arr[i];
-        const nxt: any = arr[i + 1];
-        if (cur[key] > nxt[key]) return false;
-      }
-      return true;
-    };
-    const isReverse = isSorted(notes, key) ? -1 : 1;
-    const sortedNotes = [...notes];
-    sortedNotes.sort((a: any, b: any) => {
-      if (a[key] > b[key]) return 1 * isReverse;
-      if (a[key] < b[key]) return -1 * isReverse;
-      return 0;
-    });
-    setNotes(sortedNotes);
-  };
-
   const onClickEditBtn = (note: Note, packet: Packet) => {
     onOpenEdit();
     setModalNote({
@@ -106,15 +87,35 @@ function NotesPage (): JSX.Element {
             >
               <Thead>
                 <Tr>
-                  <Th width="10%"><TableSortButton onClick={() => onClickSort('tags')}>Tags</TableSortButton></Th>
+                  <Th width="10%">
+                    <TableSortButton
+                      kkey="tags"
+                      array={notes}
+                      setArray={setNotes}
+                    >
+                      Tags
+                    </TableSortButton>
+                  </Th>
                   <Th width="20px" textAlign="center">
-                    <TableSortButton onClick={() => onClickSort('codeName')}>
-                      Name
+                    <TableSortButton
+                      kkey="codeName"
+                      array={notes}
+                      setArray={setNotes}
+                    >
+                      Tags
                     </TableSortButton>
                   </Th>
                   <Th textAlign="center" width="15%">At</Th>
                   <Th width="40%">Description</Th>
-                  <Th><TableSortButton onClick={() => onClickSort('updated_at')}>Updated at</TableSortButton></Th>
+                  <Th width="20px" textAlign="center">
+                    <TableSortButton
+                      kkey="updated_at"
+                      array={notes}
+                      setArray={setNotes}
+                    >
+                      Updated at
+                    </TableSortButton>
+                  </Th>
                   <Th textAlign="center">Action</Th>
                 </Tr>
               </Thead>

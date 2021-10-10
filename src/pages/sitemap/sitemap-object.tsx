@@ -7,6 +7,21 @@ export type SiteMapObject = {
   children: SiteMapObject[],
 };
 
+export type SiteMapMetadata = {
+  origins: string[],
+  scanning: string,
+  numPaths: number,
+  numFound: number,
+  numScanned: number,
+}
+export const sitemapMetadataDefault = {
+  origins: [],
+  scanning: '',
+  numPaths: 0,
+  numFound: 0,
+  numScanned: 0,
+};
+
 export const siteMapObjectDefault = {
   type: PathType.FOLDER,
   name: '/',
