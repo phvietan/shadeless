@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Text, Image } from '@chakra-ui/react';
-import Navbar from './navbar';
-import Footer from './footer';
+import Navbar from './common/navbar';
+import Footer from './common/footer';
 
 function BackendNotUp () {
   return (

@@ -1,5 +1,8 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable camelcase */
 import { GenericApi, GenericApiResponse } from './types';
 import storage from 'libs/storage';
+import { Note } from './notes';
 
 export type MetaData = {
   origins: string[];
@@ -7,7 +10,8 @@ export type MetaData = {
   reflectedParameters: Record<string, string>;
 }
 
-export type Packet = {
+export interface Packet {
+  id?: string;
   requestPacketId: string;
   requestPacketPrefix: string;
   requestPacketIndex: number;
@@ -43,6 +47,24 @@ export type Packet = {
   rtt: number;
   reflectedParameters: Record<string, string>;
   codeName: string;
+
+  created_at?: string;
+  updated_at?: string;
+}
+
+export enum FuzzStatus {
+  NEW = 'new',
+  RUNNING = 'running',
+  DONE = 'done',
+};
+
+export enum FuzzTool {
+  COMMIX = 'commix',
+  JAELES = 'jaeles',
+};
+export interface ParsedPacket extends Packet {
+  hash: string;
+  fuzzed: Record<FuzzTool, FuzzStatus>;
 }
 
 export const defaultMetaData: MetaData = {
@@ -88,6 +110,15 @@ export const defaultPacket: Packet = {
   codeName: '',
 };
 
+export const defaultParsedPacket: ParsedPacket = {
+  ...defaultPacket,
+  hash: '',
+  fuzzed: {
+    [FuzzTool.COMMIX]: FuzzStatus.NEW,
+    [FuzzTool.JAELES]: FuzzStatus.NEW,
+  },
+};
+
 export class PacketsApi extends GenericApi {
   private static instance?: PacketsApi = undefined;
 
@@ -117,37 +148,33 @@ export class PacketsApi extends GenericApi {
     url.search = new URLSearchParams(params).toString();
     const data = await fetch(url.toString());
     const response = await data.json();
-    return response as Omit<GenericApiResponse, 'data'> & { data: Packet[] };
+    return response as Omit<GenericApiResponse, 'data'> & { data: {
+      notes: Note[],
+      packets: ParsedPacket[],
+    } };
   }
 
   // Get TimeTravel Packets in: [-range; +range]
   async getTimeTravelPacketsById (requestPacketId: string, range: number) {
     const arr = requestPacketId.split('.');
     const [prefix, idx] = arr;
-    if (arr.length !== 2 || prefix.length !== 36) {
-      const response: Omit<GenericApiResponse, 'data'> & { data: Packet[] } = {
+    if (arr.length !== 2) {
+      const response: Omit<GenericApiResponse, 'data'> & { data: {
+        notes: Note[],
+        packets: ParsedPacket[],
+      } } = {
         statusCode: 400,
         error: 'Wrong requestPacketId format',
-        data: [],
+        data: { notes: [], packets: [] },
       };
       return response;
     }
-    return this.getTimeTravelPacketsByPrefixAndRange(
+    const t = await this.getTimeTravelPacketsByPrefixAndRange(
       prefix,
       Math.max(1, parseInt(idx) - range),
       range * 2 + 1,
     );
-  }
-
-  async getNumberPacketsByOrigin (origin: string) {
-    const endpoint = this.endpoint + storage.getProject() + '/numberPackets';
-    const params = { origin };
-    const url = new URL(endpoint);
-    url.search = new URLSearchParams(params).toString();
-
-    const data = await fetch(url.toString());
-    const response = await data.json();
-    return response as Omit<GenericApiResponse, 'data'> & { data: number };
+    return t;
   }
 
   async getPacketsByOrigin (origin: string, skip: number, limit: number) {
@@ -158,6 +185,6 @@ export class PacketsApi extends GenericApi {
 
     const data = await fetch(url.toString());
     const response = await data.json();
-    return response as Omit<GenericApiResponse, 'data'> & { data: Packet[] };
+    return response as Omit<GenericApiResponse, 'data'> & { data: ParsedPacket[] };
   }
 }

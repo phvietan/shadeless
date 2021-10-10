@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Text, Image } from '@chakra-ui/react';
-import Navbar from './navbar';
+import Navbar from './common/navbar';
 import { useLocation } from 'wouter';
 
 function Page404 () {
