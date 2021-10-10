@@ -1,15 +1,5 @@
 import React from 'react';
-import {
-  Box,
-  SkeletonText,
-  Table,
-  Thead,
-  Tr,
-  Th,
-  Button,
-  Tbody,
-  useDisclosure,
-} from '@chakra-ui/react';
+import { Box, SkeletonText, Table, Thead, Tr, Th, Tbody, useDisclosure } from '@chakra-ui/react';
 import Navbar from './common/navbar';
 import { defaultNote, Note, NotesApi, ModalNote } from 'libs/apis/notes';
 import NoteRow from './note/note-row';
@@ -17,25 +7,9 @@ import { Packet } from 'libs/apis/packets';
 import { User, UsersApi } from 'libs/apis/users';
 import NoteEditModal from './note/note-edit-modal';
 import NoteDeleteModal from './note/note-delete-modal';
+import TableSortButton from './common/table-sort-button';
 
 const noteApiInstance = NotesApi.getInstance();
-
-type TableSortButtonProps = {
-  children: any;
-  onClick: (...args: any[]) => any;
-}
-function TableSortButton (props: TableSortButtonProps) {
-  const { children, onClick } = props;
-  return (
-    <Button
-      onClick={onClick}
-      bg="transparent"
-    >
-      ↑↓ {children}
-    </Button>
-  );
-}
-
 const userApiInstance = UsersApi.getInstance();
 
 function NotesPage (): JSX.Element {
@@ -108,7 +82,7 @@ function NotesPage (): JSX.Element {
       <Navbar />
       <Box
         mt="5vh"
-        mx="8%"
+        mx="4%"
         bg="background.primary-white"
       >
         <Box

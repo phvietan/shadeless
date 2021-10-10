@@ -42,6 +42,7 @@ function AppPage () {
       pb="10vh"
     >
       <Navbar />
+
       <AppHeader metaData={metaData} isLoading={isLoading} />
       <Box px="2%">
         {isLoading &&

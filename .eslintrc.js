@@ -26,6 +26,7 @@ module.exports = {
     'comma-dangle': ['error', 'only-multiline'],
     'no-use-before-define': 'off',
     'react/prop-types': 'off',
+    noImplicitAny: 'off',
     camelcase: 'off',
   },
   globals: {

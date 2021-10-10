@@ -1,7 +1,6 @@
 import React from 'react';
-import { Tr, Td, Button, Tooltip, Text, Image } from '@chakra-ui/react';
+import { Tr, Td, Button, Tooltip, Text, Image, Link } from '@chakra-ui/react';
 import { ParsedPacket } from 'libs/apis/packets';
-import { useLocation } from 'wouter';
 import { DEFAULT_TIME_TRAVEL_PACKETS_RANGE } from 'pages/TimeTravel';
 
 type MimeTypeProps = {
@@ -32,30 +31,48 @@ function MimeImage (props: MimeTypeProps) {
   );
 }
 
+type MethodWithColorProps = {
+  children: string,
+};
+function MethodWithColor (props: MethodWithColorProps) {
+  const { children } = props;
+  let color = 'grey';
+  if (children === 'GET') color = 'green';
+  else if (children === 'POST') color = 'purple';
+  else if (children === 'PUT' || children === 'PATCH') color = 'orange';
+  else if (children === 'DELETE') color = 'red';
+  return (
+    <Text
+      textAlign="center"
+      color={color}
+      fontWeight={800}
+    >
+      {children}
+    </Text>
+  );
+}
+
 type Props = {
   packet: ParsedPacket;
 };
 
 function OriginTabRow (props: Props) {
   const { packet } = props;
-  const setLocation = useLocation()[1];
-
-  const timeMachine = async () => {
-    setLocation(`/timeTravel?range=${DEFAULT_TIME_TRAVEL_PACKETS_RANGE}&requestPacketId=${packet.requestPacketId}`);
-  };
-
   return (
     <Tr>
       <Td width="0px">
         <Tooltip fontSize="xs" label="Time machine" openDelay={200}>
-          <Button
-            size="sm"
-            bg="transparent"
-            onClick={timeMachine}
-          >
-            🕙
-          </Button>
+          <Link href={`/timeTravel?range=${DEFAULT_TIME_TRAVEL_PACKETS_RANGE}&requestPacketId=${packet.requestPacketId}`}>
+            <Button size="sm" bg="transparent">
+              🕙
+            </Button>
+          </Link>
         </Tooltip>
+      </Td>
+      <Td>
+        <MethodWithColor>
+          {packet.method}
+        </MethodWithColor>
       </Td>
       <Td width="40%"><Text wordBreak="break-all">{packet.path}</Text></Td>
       <Td>

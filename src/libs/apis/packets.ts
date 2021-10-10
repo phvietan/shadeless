@@ -49,6 +49,7 @@ export interface Packet {
   codeName: string;
 
   created_at?: string;
+  updated_at?: string;
 }
 
 export enum FuzzStatus {
