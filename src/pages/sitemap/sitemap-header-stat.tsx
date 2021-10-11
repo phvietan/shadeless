@@ -79,7 +79,7 @@ function SiteMapHeaderStatistic (props: Props) {
           <PieChart
             lineWidth={40}
             data={[
-              { title: `Paths to scan: ${metadata.origins.length - metadata.numScanned}`, value: metadata.origins.length - metadata.numScanned, color: '#C13C37' },
+              { title: `Paths to scan: ${metadata.numPaths - metadata.numScanned}`, value: metadata.origins.length - metadata.numScanned, color: '#C13C37' },
               { title: `Scanned paths: ${metadata.numScanned}`, value: metadata.numScanned, color: 'green' },
             ]}
           />

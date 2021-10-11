@@ -36,14 +36,15 @@ function SiteMapTab (props: Props) {
       {isLoading
         ? <SkeletonText mt="30px" p="20px" noOfLines={7} spacing="4" />
         : <Table
-            size="sm"
+            size="xs"
             fontSize="xs"
             variant="striped"
             colorScheme="blackAlpha"
           >
             <Thead>
               <Tr>
-                <Th>Action</Th>
+                <Th width="60px" pl="10px">Action</Th>
+                <Th pl="10px">Status</Th>
                 <Th>
                   <TableSortButton
                     kkey="path"

@@ -145,7 +145,26 @@ function ConfigProjectPage (props: Props) {
           fontSize="2xl"
           mb="10px"
         >
-          Blacklist:
+          Whitelist origin:
+        </Text>
+        <Input
+          isDisabled={isDisabled}
+          fontStyle="bold"
+          width="50%"
+          my="5px"
+          onChange={(e) => setProject({ ...project, whitelist: e.target.value })}
+          value={project.whitelist}
+          placeholder="Whitelist origins as regex, example: 'viettel|google|static'"
+          mr="5px"
+        />
+        <br/><br/>
+
+        <Text
+          as="h1"
+          fontSize="2xl"
+          mb="10px"
+        >
+          Blacklist origin:
           <Button
             ml="6px"
             size="sm"

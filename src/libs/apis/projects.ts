@@ -28,6 +28,7 @@ export const defaultProject: Project = {
   description: '',
   status: ProjectStatus.TODO,
   blacklist: [],
+  whitelist: '',
   createdAt: new Date(),
 };
 
@@ -37,6 +38,7 @@ export type Project = {
   description: string,
   status: ProjectStatus,
   blacklist: Blacklist[],
+  whitelist: string,
   createdAt: Date,
 };
 
