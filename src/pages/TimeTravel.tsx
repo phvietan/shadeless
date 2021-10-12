@@ -172,7 +172,7 @@ function TimeTravelPage () {
               }}
             />
             <Text>{isAddingNote ? 'Adding note as' : 'Editing note as'}</Text>
-            <SelectUser users={users} />
+            <SelectUser />
           </ModalBody>
 
           <ModalFooter>

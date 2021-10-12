@@ -50,6 +50,7 @@ function ShowOrigins (props: Props) {
         pl="30px"
         height={origins.length !== 0 ? '50vh' : ''}
         overflowY="scroll"
+        overflowX="scroll"
         borderRadius="5px"
         boxShadow="sm"
       >

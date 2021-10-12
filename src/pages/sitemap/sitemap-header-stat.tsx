@@ -2,6 +2,7 @@ import React from 'react';
 import { SiteMapMetadata } from './sitemap-object';
 import { SkeletonText, Box, Text, Button, Grid } from '@chakra-ui/react';
 import { PieChart } from 'react-minimal-pie-chart';
+import SiteMapSetting from './sitemap-setting';
 
 type DescProps = {
   children: string;
@@ -42,13 +43,13 @@ function SiteMapHeaderStatistic (props: Props) {
       height={metadata.origins.length !== 0 ? '55vh' : ''}
     >
       <Text as="h1"
-        bg="background.primary-black"
+        bg="background.primary-yellow"
         color="white"
         p="10px"
         pl="30px"
         borderRadius="5px 0px"
       >
-        Statistics 📌
+        Setting / statistics 📌
       </Text>
       {isLoading && <SkeletonText mt="30px" p="20px" noOfLines={7} spacing="4" />}
       <Box
@@ -56,13 +57,12 @@ function SiteMapHeaderStatistic (props: Props) {
         pl="30px"
       >
         <Grid gridTemplateColumns="1fr 1fr">
-          <Box ml="100px">
+          <SiteMapSetting />
+          <Box>
             <Text>Number of origins: {metadata.origins.length}</Text>
             <Text>Number of paths: {metadata.numPaths}</Text>
             <Text>🤖 Bot scanned: {metadata.numScanned}</Text>
             <Text>🤖 Bot found: {metadata.numFound}</Text>
-          </Box>
-          <Box alignSelf="end">
             <DescriptionPieChart color="#C13C37">
               Paths to scan
             </DescriptionPieChart>

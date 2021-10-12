@@ -4,20 +4,17 @@ import Navbar from './common/navbar';
 import { defaultNote, Note, NotesApi, ModalNote } from 'libs/apis/notes';
 import NoteRow from './note/note-row';
 import { Packet } from 'libs/apis/packets';
-import { User, UsersApi } from 'libs/apis/users';
 import NoteEditModal from './note/note-edit-modal';
 import NoteDeleteModal from './note/note-delete-modal';
 import TableSortButton from './common/table-sort-button';
 
 const noteApiInstance = NotesApi.getInstance();
-const userApiInstance = UsersApi.getInstance();
 
 function NotesPage (): JSX.Element {
   const [isLoading, setIsLoading] = React.useState(true);
   const { isOpen: isOpenEdit, onOpen: onOpenEdit, onClose: onCloseEdit } = useDisclosure();
   const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure();
 
-  const [users, setUsers] = React.useState<User[]>([]);
   const [notes, setNotes] = React.useState<Note[]>([]);
   const [packets, setPackets] = React.useState<Packet[]>([]);
   const [modalNote, setModalNote] = React.useState<ModalNote>({ ...defaultNote, path: '' });
@@ -31,12 +28,7 @@ function NotesPage (): JSX.Element {
   };
 
   React.useEffect(() => {
-    const getUsers = async () => {
-      const { data: curUsers } = await userApiInstance.getUsersInCurrentProject();
-      setUsers(curUsers);
-    };
     loadAllNotes();
-    getUsers();
   }, []);
 
   const onClickEditBtn = (note: Note, packet: Packet) => {
@@ -135,7 +127,6 @@ function NotesPage (): JSX.Element {
       </Box>
 
       <NoteEditModal
-        users={users}
         isOpen={isOpenEdit}
         onClose={onCloseEdit}
         note={modalNote}

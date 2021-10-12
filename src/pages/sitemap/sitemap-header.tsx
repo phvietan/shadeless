@@ -13,7 +13,7 @@ function SiteMapHeader (props: Props) {
   const { metadata, isLoading } = props;
   return (
     <Grid
-      gridTemplateColumns={['1fr', null, null, '2fr 3fr']}
+      gridTemplateColumns={['1fr', null, null, '1fr 3fr']}
       p="20px"
       px="2%"
       gap="20px"

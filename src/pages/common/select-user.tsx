@@ -2,14 +2,26 @@ import React from 'react';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import { Select } from '@chakra-ui/select';
 import storage from 'libs/storage';
-import { User } from 'libs/apis/users';
+import { User, UsersApi } from 'libs/apis/users';
 
-type Props = {
-  users: User[],
-};
-function SelectUser (props: Props) {
-  const { users } = props;
-  const currentCodename = storage.getCodeName();
+const userApiInstance = UsersApi.getInstance();
+
+function SelectUser () {
+  const [users, setUsers] = React.useState<User[]>([]);
+  const [currentCodename, setCurrentCodename] = React.useState(storage.getCodeName() || 'Default codename');
+
+  React.useEffect(() => {
+    const getAllUsers = async function () {
+      const resp = await userApiInstance.getUsersInCurrentProject();
+      setUsers(resp.data);
+    };
+    getAllUsers();
+  }, []);
+
+  React.useEffect(() => {
+    setCurrentCodename(users[0]?.codeName);
+  }, [users]);
+
   const onChangeUser = (e: React.ChangeEvent<HTMLSelectElement>) => {
     storage.set('codeName', e.target.value);
   };

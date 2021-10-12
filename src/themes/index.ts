@@ -7,6 +7,7 @@ const config : ThemeConfig = {
 const colors = {
   background: {
     'primary-black': '#0B2B5A',
+    'primary-yellow': '#8C8E53',
     'primary-green': '#175020',
     'primary-white': 'white',
     'primary-grey': '#EAF6EC',

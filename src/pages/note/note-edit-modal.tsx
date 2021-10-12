@@ -13,8 +13,6 @@ import {
   useToast,
   Button,
 } from '@chakra-ui/react';
-import { User } from 'libs/apis/users';
-
 import SelectUser from 'pages/common/select-user';
 import { ModalNote, NotesApi } from 'libs/apis/notes';
 import storage from 'libs/storage';
@@ -25,14 +23,12 @@ const noteApiInstance = NotesApi.getInstance();
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  users: User[];
   note: ModalNote;
   loadNotes: () => Promise<void>;
   setNote: React.Dispatch<React.SetStateAction<ModalNote>>;
 };
 function NoteEditModal (props: Props) {
   const {
-    users,
     isOpen, onClose,
     note, setNote,
     loadNotes,
@@ -41,11 +37,7 @@ function NoteEditModal (props: Props) {
   const toast = useToast();
 
   const submitNote = async () => {
-    let codeName = storage.getCodeName();
-    if (!codeName) {
-      codeName = users[0]?.codeName || 'Default codeName';
-      storage.set('codeName', codeName);
-    }
+    const codeName = storage.getCodeName() || 'Default codename';
     const resp = await noteApiInstance.editNote(note.id || '', {
       ...note,
       codeName,
@@ -103,7 +95,7 @@ function NoteEditModal (props: Props) {
             }}
           />
           <Text>Editing note as</Text>
-          <SelectUser users={users} />
+          <SelectUser />
         </ModalBody>
 
         <ModalFooter>
