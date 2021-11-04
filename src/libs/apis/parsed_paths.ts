@@ -1,41 +1,52 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
-import { GenericApi, GenericApiResponse } from './types';
+import { GenericApi, GenericApiResponse, StringApiResponse } from './types';
 import storage from 'libs/storage';
-import { SiteMapMetadata } from 'pages/sitemap/sitemap-object';
 
-export enum PathStatus {
+export enum FuzzStatus {
   TODO = 'todo',
   SCANNING = 'scanning',
   DONE = 'done',
-};
-export enum PathType {
-  FILE = 'file',
-  FOLDER = 'folder',
+  REMOVED = 'removed',
 };
 export interface ParsedPath {
-  _id?: string;
+  id?: string;
   requestPacketId: string;
   origin: string;
   path: string;
-  status: PathStatus;
+  status: FuzzStatus;
   project: string;
-  force: boolean;
   created_at?: Date;
   updated_at?: Date;
-  type: PathType;
+  result: string[];
   error: string;
+  logDir: string;
 }
 
 export const defaultParsedPath: ParsedPath = {
   requestPacketId: '',
   origin: '',
   path: '',
-  status: PathStatus.TODO,
+  status: FuzzStatus.TODO,
   project: '',
-  force: false,
-  type: PathType.FILE,
   error: '',
+  result: [],
+  logDir: '',
+};
+
+export type SiteMapMetadata = {
+  origins: string[],
+  scanning: string,
+  numPaths: number,
+  numFound: number,
+  numScanned: number,
+}
+export const sitemapMetadataDefault = {
+  origins: [],
+  scanning: '',
+  numPaths: 0,
+  numFound: 0,
+  numScanned: 0,
 };
 
 export class ParsedPathApi extends GenericApi {
@@ -59,13 +70,26 @@ export class ParsedPathApi extends GenericApi {
     return response as Omit<GenericApiResponse, 'data'> & { data: SiteMapMetadata };
   }
 
-  async getCurrentProjectParsedPathByOrigin (origin: string) {
+  async getParsedPaths () {
+    type ParsedPathResult = {
+      done: ParsedPath[],
+      todo: ParsedPath[],
+      removed: ParsedPath[],
+      scanning: ParsedPath[],
+    }
     const endpoint = this.endpoint + storage.getProject() + '/paths';
-    const url = new URL(endpoint);
-    url.search = new URLSearchParams({ origin }).toString();
-
-    const data = await fetch(url.toString());
+    const data = await fetch(endpoint);
     const response = await data.json();
-    return response as Omit<GenericApiResponse, 'data'> & { data: ParsedPath[] };
+    return response as Omit<GenericApiResponse, 'data'> & { data: ParsedPathResult };
+  }
+
+  async updateStatus (parsedPath: ParsedPath, status: FuzzStatus) {
+    const endpoint = this.endpoint + storage.getProject() + '/paths/' + parsedPath.id + '/status';
+    const data = await fetch(endpoint, {
+      ...GenericApi.putOptions,
+      body: JSON.stringify({ status }),
+    });
+    const response = await data.json();
+    return response as StringApiResponse;
   }
 }

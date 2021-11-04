@@ -2,7 +2,7 @@
 import { GenericApi, GenericApiResponse, StringApiResponse } from './types';
 import storage from 'libs/storage';
 
-export const defaultBotPath: BotPath = {
+export const defaultBotFuzzer: BotFuzzer = {
   id: '',
   timeout: 0,
   project: '',
@@ -11,7 +11,7 @@ export const defaultBotPath: BotPath = {
   sleepRequest: 0,
 };
 
-export type BotPath = {
+export type BotFuzzer = {
   id?: string,
   timeout: number,
   project: string,
@@ -20,8 +20,8 @@ export type BotPath = {
   sleepRequest: number,
 };
 
-export class BotPathApi extends GenericApi {
-  private static instance?: BotPathApi = undefined;
+export class BotFuzzerApi extends GenericApi {
+  private static instance?: BotFuzzerApi = undefined;
 
   private constructor () {
     super('projects');
@@ -29,30 +29,30 @@ export class BotPathApi extends GenericApi {
 
   public static getInstance () {
     if (!this.instance) {
-      this.instance = new BotPathApi();
+      this.instance = new BotFuzzerApi();
     }
     return this.instance;
   }
 
-  async getBotPath () {
-    const endpoint = this.endpoint + storage.getProject() + '/bot_path';
+  async getBotFuzzer () {
+    const endpoint = this.endpoint + storage.getProject() + '/bot_fuzzer';
     const data = await fetch(endpoint);
     const response = await data.json();
-    return response as Omit<GenericApiResponse, 'data'> & { data: BotPath };
+    return response as Omit<GenericApiResponse, 'data'> & { data: BotFuzzer };
   }
 
-  async updateBotPath (newBotPath: Partial<BotPath>) {
-    const endpoint = this.endpoint + storage.getProject() + '/bot_path';
+  async updateBotFuzzer (newBotFuzzer: Partial<BotFuzzer>) {
+    const endpoint = this.endpoint + storage.getProject() + '/bot_fuzzer';
     const data = await fetch(endpoint, {
       ...GenericApi.putOptions,
-      body: JSON.stringify(newBotPath),
+      body: JSON.stringify(newBotFuzzer),
     });
     const response = await data.json();
     return response as StringApiResponse;
   }
 
-  async switchBotPath () {
-    const endpoint = this.endpoint + storage.getProject() + '/bot_path/run';
+  async switchBotFuzzer () {
+    const endpoint = this.endpoint + storage.getProject() + '/bot_fuzzer/run';
     const data = await fetch(endpoint, GenericApi.putOptions);
     const response = await data.json();
     return response as StringApiResponse;

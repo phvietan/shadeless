@@ -26,8 +26,6 @@ function SettingPage () {
     getUsers();
   }, []);
 
-  console.log(users);
-
   return (
     <Box
       bg="background.primary-grey"

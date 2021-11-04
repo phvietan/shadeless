@@ -57,6 +57,7 @@ function TimeTravelTab (props: Props) {
       shadow="xs"
       borderRadius="5px"
       id={packet.requestPacketIndex.toString()}
+      name={packet.requestPacketId}
     >
       <Box bg="background.primary-black">
         <Grid gridTemplateColumns="1fr 1fr">

@@ -1,7 +1,7 @@
 import React from 'react';
 import { SkeletonText, Box, Text, Button, Grid } from '@chakra-ui/react';
 import { PieChart } from 'react-minimal-pie-chart';
-import SiteMapSetting from './sitemap-setting';
+import SiteMapSetting from './fuzz-setting';
 import { SiteMapMetadata } from 'libs/apis/parsed_paths';
 
 type DescProps = {
@@ -43,13 +43,13 @@ function SiteMapHeaderStatistic (props: Props) {
       height={metadata.origins.length !== 0 ? '55vh' : ''}
     >
       <Text as="h1"
-        bg="background.primary-red"
+        bg="DarkRed"
         color="white"
         p="10px"
         pl="30px"
         borderRadius="5px 0px"
       >
-        Setting / statistics 📌
+        Setting / statistics for fuzzing 📌
       </Text>
       {isLoading && <SkeletonText mt="30px" p="20px" noOfLines={7} spacing="4" />}
       <Box

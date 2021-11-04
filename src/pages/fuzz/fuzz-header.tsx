@@ -2,7 +2,7 @@ import React from 'react';
 import { Grid, useToast, Box, SkeletonText } from '@chakra-ui/react';
 
 import ShowOrigins from 'pages/dashboard/show-origins';
-import SiteMapHeaderStatistic from './sitemap-header-stat';
+import FuzzHeaderStatistic from './fuzz-header-stat';
 import { ParsedPathApi, SiteMapMetadata, sitemapMetadataDefault } from 'libs/apis/parsed_paths';
 import { useLocation } from 'wouter';
 import { notify } from 'libs/notify';
@@ -10,7 +10,7 @@ import storage from 'libs/storage';
 
 const parsedPathApiInstance = ParsedPathApi.getInstance();
 
-function SiteMapHeader () {
+function FuzzHeader () {
   const toast = useToast();
   const setLocation = useLocation()[1];
   const [isLoading, setIsLoading] = React.useState(true);
@@ -57,7 +57,7 @@ function SiteMapHeader () {
         isLoading={isLoading}
         origins={metadata.origins.filter(origin => origin !== '')}
       />
-      <SiteMapHeaderStatistic
+      <FuzzHeaderStatistic
         metadata={metadata}
         isLoading={isLoading}
       />
@@ -65,4 +65,4 @@ function SiteMapHeader () {
   );
 }
 
-export default SiteMapHeader;
+export default FuzzHeader;

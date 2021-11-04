@@ -41,7 +41,6 @@ class PPPStore {
       };
       request.onsuccess = function (event: any) {
         const data = event.target.result;
-        console.log(event.target);
         data.value = newValue;
         const requestUpdate = store.put(data);
         requestUpdate.onerror = function (event) {

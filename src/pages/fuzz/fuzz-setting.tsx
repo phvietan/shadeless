@@ -19,7 +19,7 @@ import { notify } from 'libs/notify';
 
 const botPathInstance = BotPathApi.getInstance();
 
-function SiteMapSetting () {
+function FuzzSetting () {
   const toast = useToast();
   const [botPath, setBotPath] = React.useState<BotPath>(defaultBotPath);
   const [botPathUpdate, setBotPathUpdate] = React.useState<BotPath>(defaultBotPath);
@@ -109,4 +109,4 @@ function SiteMapSetting () {
   );
 }
 
-export default SiteMapSetting;
+export default FuzzSetting;

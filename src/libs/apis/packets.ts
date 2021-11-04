@@ -1,8 +1,9 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
-import { GenericApi, GenericApiResponse } from './types';
+import { GenericApi, GenericApiResponse, StringApiResponse } from './types';
 import storage from 'libs/storage';
 import { Note } from './notes';
+import { FuzzStatus } from './parsed_paths';
 
 export type MetaData = {
   origins: string[];
@@ -52,19 +53,12 @@ export interface Packet {
   updated_at?: string;
 }
 
-export enum FuzzStatus {
-  NEW = 'new',
-  RUNNING = 'running',
-  DONE = 'done',
-};
-
-export enum FuzzTool {
-  COMMIX = 'commix',
-  JAELES = 'jaeles',
-};
 export interface ParsedPacket extends Packet {
   hash: string;
-  fuzzed: Record<FuzzTool, FuzzStatus>;
+  result: string[];
+  status: FuzzStatus;
+  staticScore: number;
+  logDir: string;
 }
 
 export const defaultMetaData: MetaData = {
@@ -113,10 +107,10 @@ export const defaultPacket: Packet = {
 export const defaultParsedPacket: ParsedPacket = {
   ...defaultPacket,
   hash: '',
-  fuzzed: {
-    [FuzzTool.COMMIX]: FuzzStatus.NEW,
-    [FuzzTool.JAELES]: FuzzStatus.NEW,
-  },
+  result: [],
+  staticScore: 0,
+  logDir: '',
+  status: FuzzStatus.TODO,
 };
 
 export class PacketsApi extends GenericApi {
@@ -186,5 +180,34 @@ export class PacketsApi extends GenericApi {
     const data = await fetch(url.toString());
     const response = await data.json();
     return response as Omit<GenericApiResponse, 'data'> & { data: ParsedPacket[] };
+  }
+
+  async getFuzzPackets () {
+    type FuzzPackets = {
+      done: ParsedPacket[],
+      scanning: ParsedPacket[],
+      todo: ParsedPacket[],
+    };
+    const endpoint = this.endpoint + storage.getProject() + '/fuzzing_packets/api';
+    const data = await fetch(endpoint);
+    const response = await data.json();
+    return response as Omit<GenericApiResponse, 'data'> & { data: FuzzPackets };
+  }
+
+  async getStaticFuzzPackets () {
+    const endpoint = this.endpoint + storage.getProject() + '/fuzzing_packets/static';
+    const data = await fetch(endpoint);
+    const response = await data.json();
+    return response as Omit<GenericApiResponse, 'data'> & { data: ParsedPacket[] };
+  }
+
+  async putStaticFuzzPackets (id: string, newScore: number) {
+    const endpoint = this.endpoint + storage.getProject() + '/fuzzing_packets/' + id + '/score';
+    const data = await fetch(endpoint, {
+      ...GenericApi.putOptions,
+      body: JSON.stringify({ score: newScore }),
+    });
+    const response = await data.json();
+    return response as StringApiResponse;
   }
 }

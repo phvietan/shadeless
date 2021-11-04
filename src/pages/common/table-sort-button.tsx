@@ -13,7 +13,6 @@ function TableSortButton<T> (props: TableSortButtonProps<T>) {
   const { children, kkey, array, setArray, onClick } = props;
 
   async function onClickSort (kkey: string) {
-    console.log(kkey, array, setArray);
     const isSorted = (arr: T[], kkey: string): boolean => {
       for (let i = 0; i < arr.length - 1; i += 1) {
         const cur: any = arr[i];
@@ -30,7 +29,6 @@ function TableSortButton<T> (props: TableSortButtonProps<T>) {
       return 0;
     });
     if (setArray) {
-      console.log(sortedArr);
       setArray(sortedArr);
     }
   };

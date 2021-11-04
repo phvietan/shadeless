@@ -1,14 +1,15 @@
 import React from 'react';
-import { FuzzStatus, ParsedPath } from 'libs/apis/parsed_paths';
+import { FuzzStatus } from 'libs/apis/parsed_paths';
+import { ParsedPacket } from 'libs/apis/packets';
 import { Box, Text, Button, Tooltip, Link, Grid } from '@chakra-ui/react';
 import { GenericApi } from 'libs/apis/types';
 
 type Props = {
-  parsedPath: ParsedPath;
-  updateStatus: (parsedPath: ParsedPath, status: FuzzStatus) => Promise<void>;
+  api: ParsedPacket;
+  updateScore: (api: ParsedPacket, newScore: number) => Promise<void>;
 };
-function SiteMapTab (props: Props) {
-  const { parsedPath, updateStatus } = props;
+function FuzzTab (props: Props) {
+  const { api, updateScore } = props;
   return (
     <Box
       border="1px solid LightGray"
@@ -16,34 +17,37 @@ function SiteMapTab (props: Props) {
     >
       <Grid gridTemplateColumns="1fr 1fr">
         <Box>
-          <Text>{parsedPath.origin}</Text>
-          <Text fontSize="xs">{parsedPath.path}</Text>
-          {parsedPath.status === FuzzStatus.DONE &&
+          <Text>{api.origin}</Text>
+          <Text fontSize="xs">{api.path}</Text>
+          {api.parameters.map((param, index) =>
+            <Button
+              key={`${api.origin}/${api.path}/${param}/${index}`}
+              size="xs"
+              borderRadius="5px"
+              m="2px"
+              colorScheme={(param in api.reflectedParameters) ? 'green' : 'blackAlpha'}
+            >
+              {param}
+            </Button>
+          )}
+          {api.status === FuzzStatus.DONE &&
             <Box>
-              {parsedPath.result.length !== 0 &&
+              {api.result.length !== 0 &&
                 <Text
                   fontSize="xs"
                   color="LawnGreen"
                 >
-                  Found: {parsedPath.result.length} new paths
-                </Text>
-              }
-              {parsedPath.error !== '' &&
-                <Text
-                  fontSize="xs"
-                  color="FireBrick"
-                >
-                  Error: {parsedPath.error}
+                  Found: {api.result.length} bugs
                 </Text>
               }
             </Box>
           }
         </Box>
         <Box justifySelf="end">
-          {parsedPath.status === FuzzStatus.DONE &&
+          {api.status === FuzzStatus.DONE &&
             <Tooltip label="See log">
               <Link
-                href={`${GenericApi.backendUrl}/${parsedPath.logDir}`}
+                href={`${GenericApi.backendUrl}/${api.logDir}`}
                 rel="nofollow noopener"
                 target="_blank"
               >
@@ -56,23 +60,23 @@ function SiteMapTab (props: Props) {
               </Link>
             </Tooltip>
           }
-          {parsedPath.status === FuzzStatus.TODO &&
-            <Tooltip label="Don't fuzz this path">
+          {api.status === FuzzStatus.TODO &&
+            <Tooltip label="Don't fuzz this api">
               <Button
                 size="xs"
                 bg="white"
-                onClick={() => updateStatus(parsedPath, FuzzStatus.REMOVED)}
+                onClick={() => updateScore(api, 100)}
               >
                 ❌
               </Button>
             </Tooltip>
           }
-          {parsedPath.status === FuzzStatus.REMOVED &&
-            <Tooltip label="Restore this path">
+          {api.status === FuzzStatus.REMOVED &&
+            <Tooltip label="Restore this api">
               <Button
                 size="xs"
                 bg="white"
-                onClick={() => updateStatus(parsedPath, FuzzStatus.TODO)}
+                onClick={() => updateScore(api, 0)}
               >
                 ✔️
               </Button>
@@ -85,4 +89,4 @@ function SiteMapTab (props: Props) {
   );
 }
 
-export default SiteMapTab;
+export default FuzzTab;

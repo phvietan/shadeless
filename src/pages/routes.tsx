@@ -7,6 +7,7 @@ import SettingPage from 'pages/Setting';
 
 import Footer from 'pages/common/footer';
 import NotesPage from './Notes';
+import FuzzPage from './Fuzz';
 import TimeTravelPage from './TimeTravel';
 import SitemapPage from './SiteMap';
 import storage from 'libs/storage';
@@ -91,6 +92,10 @@ function Routes () {
       </Route>
       <Route path="/sitemap">
         <SitemapPage />
+        <Footer />
+      </Route>
+      <Route path="/fuzz">
+        <FuzzPage />
         <Footer />
       </Route>
       <Route>
