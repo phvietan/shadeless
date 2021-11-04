@@ -59,6 +59,7 @@ function SiteMapSetting () {
       </Button>
       <Text>Number of async request: {botPath.asyncRequest}</Text>
       <Text>Sleep between requests: {botPath.sleepRequest} (ms)</Text>
+      <Text>Timeout per request: {botPath.timeout} (ms)</Text>
       <Button
         colorScheme="orange"
         onClick={onOpen}
@@ -91,6 +92,12 @@ function SiteMapSetting () {
               type="text"
               value={botPathUpdate.sleepRequest}
               onChange={(e) => setBotPathUpdate({ ...botPathUpdate, sleepRequest: +e.target.value })}
+            />
+            <Text mb="5px">Timeout per request (in ms)</Text>
+            <Input
+              type="text"
+              value={botPathUpdate.timeout}
+              onChange={(e) => setBotPathUpdate({ ...botPathUpdate, timeout: +e.target.value })}
             />
           </ModalBody>
 

@@ -17,8 +17,16 @@ function FuzzTab (props: Props) {
     >
       <Grid gridTemplateColumns="1fr 1fr">
         <Box>
-          <Text>{api.origin}</Text>
+          <Box display="inline">
+            <Text as="span" color="purple" fontWeight="bold">
+              {api.method}&nbsp;
+            </Text>
+            <Text as="span">
+              {api.origin}
+            </Text>
+          </Box>
           <Text fontSize="xs">{api.path}</Text>
+
           {api.parameters.map((param, index) =>
             <Button
               key={`${api.origin}/${api.path}/${param}/${index}`}
@@ -60,7 +68,7 @@ function FuzzTab (props: Props) {
               </Link>
             </Tooltip>
           }
-          {api.status === FuzzStatus.TODO &&
+          {api.staticScore <= 50 &&
             <Tooltip label="Don't fuzz this api">
               <Button
                 size="xs"
@@ -71,7 +79,7 @@ function FuzzTab (props: Props) {
               </Button>
             </Tooltip>
           }
-          {api.status === FuzzStatus.REMOVED &&
+          {api.staticScore > 50 &&
             <Tooltip label="Restore this api">
               <Button
                 size="xs"

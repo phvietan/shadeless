@@ -13,99 +13,129 @@ import {
   ModalContent,
   ModalCloseButton,
   Input,
+  Box,
+  SkeletonText,
 } from '@chakra-ui/react';
-import { BotPath, BotPathApi, defaultBotPath } from 'libs/apis/bot_path';
 import { notify } from 'libs/notify';
+import { BotFuzzer, BotFuzzerApi, defaultBotFuzzer } from 'libs/apis/bot_fuzzer';
 
-const botPathInstance = BotPathApi.getInstance();
+const botFuzzerInstance = BotFuzzerApi.getInstance();
 
 function FuzzSetting () {
   const toast = useToast();
-  const [botPath, setBotPath] = React.useState<BotPath>(defaultBotPath);
-  const [botPathUpdate, setBotPathUpdate] = React.useState<BotPath>(defaultBotPath);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [botFuzzer, setBotFuzzer] = React.useState<BotFuzzer>(defaultBotFuzzer);
+  const [botFuzzerUpdate, setBotFuzzerUpdate] = React.useState<BotFuzzer>(defaultBotFuzzer);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const getBotPathSetting = async () => {
-    const resp = await botPathInstance.getBotPath();
-    setBotPath(resp.data);
-    setBotPathUpdate(resp.data);
+  const getBotFuzzerSetting = async () => {
+    const resp = await botFuzzerInstance.getBotFuzzer();
+    setBotFuzzer(resp.data);
+    setBotFuzzerUpdate(resp.data);
+    setIsLoading(false);
   };
   React.useEffect(() => {
-    getBotPathSetting();
+    getBotFuzzerSetting();
   }, []);
 
-  const switchBotPathRunning = async () => {
-    const resp = await botPathInstance.switchBotPath();
+  const switchBotFuzzerRunning = async () => {
+    const resp = await botFuzzerInstance.switchBotFuzzer();
     notify(toast, resp);
-    setBotPath({ ...botPath, running: Boolean(1 - +botPath.running) });
+    setBotFuzzer({ ...botFuzzer, running: Boolean(1 - +botFuzzer.running) });
   };
 
-  const updateBotPath = async () => {
-    const resp = await botPathInstance.updateBotPath(botPathUpdate);
+  const updateBotFuzzer = async () => {
+    const resp = await botFuzzerInstance.updateBotFuzzer(botFuzzerUpdate);
     notify(toast, resp);
-    await getBotPathSetting();
+    await getBotFuzzerSetting();
     onClose();
   };
 
   return (
-    <Stack>
-      <Text as="span">Bot path is {botPath.running ? 'running' : 'not running'}</Text>
-      <Button
-        onClick={switchBotPathRunning}
-        width="100px"
-        colorScheme={botPath.running ? 'red' : 'green'}
+    <Box
+      bg="background.primary-white"
+      boxShadow="sm"
+      borderRadius="5px"
+      m="2%"
+    >
+      <Text as="h1"
+        bg="DarkRed"
+        color="white"
+        p="10px"
+        pl="30px"
+        borderRadius="5px 0px"
       >
-        {botPath.running ? 'Stop' : 'Start'}
-      </Button>
-      <Text>Number of async request: {botPath.asyncRequest}</Text>
-      <Text>Sleep between requests: {botPath.sleepRequest} (ms)</Text>
-      <Button
-        colorScheme="orange"
-        onClick={onOpen}
-        width="80px"
-      >
-        Edit
-      </Button>
-      <Modal
-        isOpen={isOpen}
-        onClose={onClose}
-        isCentered
-        size="xl"
-      >
-        <ModalOverlay />
-        <ModalContent
-          colorScheme="red"
-          p="10px"
-        >
-          <ModalHeader>Updating bot path</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Text mb="5px">Number of async request</Text>
-            <Input
-              type="text"
-              value={botPathUpdate.asyncRequest}
-              onChange={(e) => setBotPathUpdate({ ...botPathUpdate, asyncRequest: +e.target.value })}
-            />
-            <Text mb="5px">Sleep time between requests (in ms)</Text>
-            <Input
-              type="text"
-              value={botPathUpdate.sleepRequest}
-              onChange={(e) => setBotPathUpdate({ ...botPathUpdate, sleepRequest: +e.target.value })}
-            />
-          </ModalBody>
-
-          <ModalFooter>
-            <Button
-              colorScheme='green'
-              mr={2}
-              onClick={updateBotPath}
+        Setting / statistics for fuzzing 📌
+      </Text>
+      {isLoading && <SkeletonText mt="30px" p="20px" noOfLines={7} spacing="4" />}
+      <Box p="10px" pl="30px">
+        <Stack>
+          <Text as="span">Bot fuzzer is {botFuzzer.running ? 'running' : 'not running'}</Text>
+          <Button
+            onClick={switchBotFuzzerRunning}
+            width="100px"
+            colorScheme={botFuzzer.running ? 'red' : 'green'}
+          >
+            {botFuzzer.running ? 'Stop' : 'Start'}
+          </Button>
+          <Text>Number of async request: {botFuzzer.asyncRequest}</Text>
+          <Text>Sleep between requests: {botFuzzer.sleepRequest} (ms)</Text>
+          <Text>Timeout per request: {botFuzzer.timeout} (ms)</Text>
+          <Button
+            colorScheme="orange"
+            onClick={onOpen}
+            width="80px"
+          >
+            Edit
+          </Button>
+          <Modal
+            isOpen={isOpen}
+            onClose={onClose}
+            isCentered
+            size="xl"
+          >
+            <ModalOverlay />
+            <ModalContent
+              colorScheme="red"
+              p="10px"
             >
-              Edit
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </Stack>
+              <ModalHeader>Updating bot fuzzer</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <Text mb="5px">Number of async request</Text>
+                <Input
+                  type="text"
+                  value={botFuzzerUpdate.asyncRequest}
+                  onChange={(e) => setBotFuzzerUpdate({ ...botFuzzerUpdate, asyncRequest: +e.target.value })}
+                />
+                <Text mb="5px">Sleep time between requests (in ms)</Text>
+                <Input
+                  type="text"
+                  value={botFuzzerUpdate.sleepRequest}
+                  onChange={(e) => setBotFuzzerUpdate({ ...botFuzzerUpdate, sleepRequest: +e.target.value })}
+                />
+                <Text mb="5px">Timeout per request (in ms)</Text>
+                <Input
+                  type="text"
+                  value={botFuzzerUpdate.timeout}
+                  onChange={(e) => setBotFuzzerUpdate({ ...botFuzzerUpdate, timeout: +e.target.value })}
+                />
+              </ModalBody>
+
+              <ModalFooter>
+                <Button
+                  colorScheme='green'
+                  mr={2}
+                  onClick={updateBotFuzzer}
+                >
+                  Edit
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+        </Stack>
+      </Box>
+    </Box>
   );
 }
 

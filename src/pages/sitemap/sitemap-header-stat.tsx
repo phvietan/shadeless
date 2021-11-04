@@ -43,7 +43,7 @@ function SiteMapHeaderStatistic (props: Props) {
       height={metadata.origins.length !== 0 ? '55vh' : ''}
     >
       <Text as="h1"
-        bg="background.primary-red"
+        bg="DarkOrange"
         color="white"
         p="10px"
         pl="30px"

@@ -1,10 +1,10 @@
 import React from 'react';
 import Navbar from './common/navbar';
 import FuzzTab from './fuzz/fuzz-tab';
-import FuzzHeader from './fuzz/fuzz-header';
 import { notify } from 'libs/notify';
 import { Box, Text, Grid, useToast } from '@chakra-ui/react';
 import { PacketsApi, ParsedPacket } from 'libs/apis/packets';
+import FuzzSetting from './fuzz/fuzz-setting';
 
 const packetApiInstance = PacketsApi.getInstance();
 
@@ -75,7 +75,7 @@ function Fuzz () {
       pb="10vh"
     >
       <Navbar />
-      <FuzzHeader />
+      <FuzzSetting />
 
       <FuzzSection
         title="Fuzzed apis"
