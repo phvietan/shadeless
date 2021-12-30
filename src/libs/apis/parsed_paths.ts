@@ -34,21 +34,6 @@ export const defaultParsedPath: ParsedPath = {
   logDir: '',
 };
 
-export type SiteMapMetadata = {
-  origins: string[],
-  scanning: string,
-  numPaths: number,
-  numFound: number,
-  numScanned: number,
-}
-export const sitemapMetadataDefault = {
-  origins: [],
-  scanning: '',
-  numPaths: 0,
-  numFound: 0,
-  numScanned: 0,
-};
-
 export class ParsedPathApi extends GenericApi {
   private static instance?: ParsedPathApi = undefined;
 
@@ -61,13 +46,6 @@ export class ParsedPathApi extends GenericApi {
       this.instance = new ParsedPathApi();
     }
     return this.instance;
-  }
-
-  async getMetaData () {
-    const endpoint = this.endpoint + storage.getProject() + '/paths/metadata';
-    const data = await fetch(endpoint);
-    const response = await data.json();
-    return response as Omit<GenericApiResponse, 'data'> & { data: SiteMapMetadata };
   }
 
   async getParsedPaths () {

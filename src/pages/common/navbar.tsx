@@ -36,8 +36,6 @@ function Navbar () {
           </Text>
 
         <Link href="/notes">Notes</Link>
-        <Link href="/sitemap">Sitemap</Link>
-        <Link href="/fuzz">Fuzz</Link>
       </HStack>
       <Menu>
         <MenuButton as={Button}

@@ -7,9 +7,7 @@ import SettingPage from 'pages/Setting';
 
 import Footer from 'pages/common/footer';
 import NotesPage from './Notes';
-import FuzzPage from './Fuzz';
 import TimeTravelPage from './TimeTravel';
-import SitemapPage from './SiteMap';
 import storage from 'libs/storage';
 import BackendNotUp from './Backend-not-up';
 import Page404 from './Page404';
@@ -88,14 +86,6 @@ function Routes () {
       </Route>
       <Route path="/timeTravel">
         <TimeTravelPage />
-        <Footer />
-      </Route>
-      <Route path="/sitemap">
-        <SitemapPage />
-        <Footer />
-      </Route>
-      <Route path="/fuzz">
-        <FuzzPage />
         <Footer />
       </Route>
       <Route>
