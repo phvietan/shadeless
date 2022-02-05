@@ -1,13 +1,11 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
-import { Packet, ParsedPacket } from 'libs/apis/packets';
-import { Box, Button, Grid, Link, Text } from '@chakra-ui/react';
+import { ParsedPacket } from 'libs/apis/packets';
+import { Box, Grid, Text } from '@chakra-ui/react';
 import { FilesApi } from 'libs/apis/files';
 import TimeTravelBody from './time-travel-body';
-import { GenericApi } from 'libs/apis/types';
-import storage from 'libs/storage';
 import { dateToString } from 'libs/timing';
-import { notify, ToastType } from 'libs/notify';
+import { ToastType } from 'libs/notify';
 import { Note } from 'libs/apis/notes';
 import TimeTravelActionRow from './time-travel-action-row';
 
@@ -19,6 +17,12 @@ export enum TimeTravelBodyType {
   REQUEST_BODY = 'time-travel-request-body',
   RESPONSE_BODY = 'time-travel-response-body',
 };
+
+function getFirstLineRequestHeader(packet: ParsedPacket): string {
+  let { path } = packet;
+  if (packet.querystring !== '') path += `?${packet.querystring}`;
+  return `${packet.method} ${path} ${packet.requestHttpVersion}`;
+}
 
 type Props = {
   packet: ParsedPacket;
@@ -34,6 +38,8 @@ function TimeTravelTab (props: Props) {
   const [requestBody, setRequestBody] = React.useState<string>('');
   const [responseBody, setResponseBody] = React.useState<string>('');
 
+  const [requestHeaders, setRequestHeaders] = React.useState<string[]>([]);
+
   const getBodies = async () => {
     const [reqBody, errReq] = await filesApiInstance.getFileContentFromId(packet.requestBodyHash);
     const [resBody, errRes] = await filesApiInstance.getFileContentFromId(packet.responseBodyHash);
@@ -45,6 +51,10 @@ function TimeTravelTab (props: Props) {
   };
   React.useEffect(() => {
     getBodies();
+    setRequestHeaders([
+      getFirstLineRequestHeader(packet),
+      ...packet.requestHeaders,
+    ]);
   }, [packet]);
 
   return (
@@ -86,7 +96,7 @@ function TimeTravelTab (props: Props) {
           bodyType={TimeTravelBodyType.REQUEST_HEADER}
           isLoading={false}
           reflectedParameters={packet.reflectedParameters}
-          content={packet.requestHeaders.join('\n')}
+          content={requestHeaders.join('\n')}
         />
         <TimeTravelBody
           bodyType={TimeTravelBodyType.RESPONSE_HEADER}
