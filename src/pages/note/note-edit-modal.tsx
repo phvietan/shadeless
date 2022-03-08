@@ -27,7 +27,7 @@ type Props = {
   loadNotes: () => Promise<void>;
   setNote: React.Dispatch<React.SetStateAction<ModalNote>>;
 };
-function NoteEditModal (props: Props) {
+function NoteEditModal(props: Props) {
   const {
     isOpen, onClose,
     note, setNote,
@@ -55,13 +55,10 @@ function NoteEditModal (props: Props) {
       size="xl"
     >
       <ModalOverlay />
-      <ModalContent
-        colorScheme="red"
-        p="10px"
-      >
+      <ModalContent p="10px">
         <ModalHeader>
           {`Edit ${note.codeName}'s note`}
-          <br/>
+          <br />
           <Text
             fontWeight={100}
             opacity={0.4}

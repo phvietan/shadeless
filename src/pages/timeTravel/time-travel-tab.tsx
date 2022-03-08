@@ -30,7 +30,7 @@ type Props = {
   toast: ToastType;
   clickNote: (packet: ParsedPacket, note?: Note) => void;
 };
-function TimeTravelTab (props: Props) {
+function TimeTravelTab(props: Props) {
   const { packet, toast, note, clickNote } = props;
   const [isLoading, setIsLoading] = React.useState(true);
   const [errRequest, setErrRequest] = React.useState<string>('');
@@ -67,7 +67,6 @@ function TimeTravelTab (props: Props) {
       shadow="xs"
       borderRadius="5px"
       id={packet.requestPacketIndex.toString()}
-      name={packet.requestPacketId}
     >
       <Box bg="background.primary-black">
         <Grid gridTemplateColumns="1fr 1fr">

@@ -29,7 +29,7 @@ const packetApiInstance = PacketsApi.getInstance();
 const userApiInstance = UsersApi.getInstance();
 const noteApiInstance = NotesApi.getInstance();
 
-function TimeTravelPage () {
+function TimeTravelPage() {
   const toast = useToast();
   const [isLoading, setIsLoading] = React.useState(true);
   const [isAddingNote, setIsAddingNote] = React.useState(true);
@@ -132,13 +132,10 @@ function TimeTravelPage () {
         size="xl"
       >
         <ModalOverlay />
-        <ModalContent
-          colorScheme="red"
-          p="10px"
-        >
+        <ModalContent p="10px">
           <ModalHeader>
             {isAddingNote ? 'Adding new note' : `Edit ${modalNote.codeName}'s note`}
-            <br/>
+            <br />
             <Text
               fontWeight={100}
               opacity={0.4}

@@ -22,7 +22,7 @@ module.exports = {
   ],
   rules: {
     semi: ['error', 'always'],
-    'space-before-function-paren': 'error',
+    'space-before-function-paren': 0,
     'comma-dangle': ['error', 'only-multiline'],
     'no-use-before-define': 'off',
     'react/prop-types': 'off',

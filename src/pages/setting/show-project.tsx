@@ -28,7 +28,7 @@ type Props = {
   projects: Project[]
   getProjects: () => Promise<void>
 }
-function ShowProjectsBox (props: Props) {
+function ShowProjectsBox(props: Props) {
   const { projects, getProjects } = props;
   const toast = useToast();
   const currentProject = storage.getProject();
@@ -144,10 +144,7 @@ function ShowProjectsBox (props: Props) {
         isCentered
       >
         <ModalOverlay />
-        <ModalContent
-          colorScheme="red"
-          p="10px"
-        >
+        <ModalContent p="10px">
           <ModalHeader>Are you sure to delete
             <Text as="span" color="black" mx="5px" fontSize="2xl">{deletingProject.name}</Text>?
           </ModalHeader>

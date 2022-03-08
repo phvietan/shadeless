@@ -23,7 +23,7 @@ type Props = {
   note: ModalNote;
   loadNotes: () => Promise<void>;
 };
-function NoteDeleteModal (props: Props) {
+function NoteDeleteModal(props: Props) {
   const { isOpen, onClose, note, loadNotes } = props;
   const toast = useToast();
 
@@ -42,13 +42,10 @@ function NoteDeleteModal (props: Props) {
       size="xl"
     >
       <ModalOverlay />
-      <ModalContent
-        colorScheme="red"
-        p="10px"
-      >
+      <ModalContent p="10px">
         <ModalHeader>
           {`Deleting ${note.codeName}'s note`}
-          <br/>
+          <br />
           <Text
             fontWeight={100}
             opacity={0.4}
